@@ -1,35 +1,34 @@
-# Bonsai2-27B — PTQ1_0 + distilled MTP draft head
+# Bonsai2-27B — a distilled MTP draft head for the MTP-less official model
 
 **English** | [中文](README.md)
 
-A self-distilled **MTP (multi-token prediction / `nextn`) draft head** for
-`Ternary-Bonsai-2-27B-PTQ1_0` (architecture `qwen35`, PrismML PTQ1_0 ternary trunk,
-256K context), trained as a direct replacement for the shipped head.
+`Ternary-Bonsai-2-27B-PTQ1_0` (architecture `qwen35`, PrismML PTQ1_0 ternary trunk, 256K
+context) **ships without an MTP head** (`Ternary-Bonsai-2-27B-PTQ1_0.gguf`: `block_count=64`,
+851 tensors, no `blk.64.*` at all). What this repository provides is the **one head that adds
+MTP capability**, self-distilled from "it runs" to "it's good":
 
-Only the **head weights** live in this repository — no model file is redistributed here (see
-[What is / is not in this repo](#what-is--is-not-in-this-repo)). The head is a drop-in patch:
-grafting rewrites the 15 `blk.64.*` tensors **in place**, in each tensor's own type
-(Q6_K / Q8_0 / F32), leaving every other byte untouched — so the grafted file has **exactly
-the size of its input file**.
+1. **Add the structure** — append an MTP head (15 `blk.64.*` tensors) to the official model to
+   get a draft-capable file: `block_count` 64 → 65, plus `qwen35.nextn_predict_layers=1`,
+   **size +0.351 GB**. This step is a pure **append**; the file grows.
+2. **Swap the weights** — replace those 15 tensors **in place** with the head trained in this
+   repo (rewritten in each tensor's own type, Q6_K / Q8_0 / F32, every other byte untouched),
+   giving this repo's `-mtp-distill2.gguf`. The swap itself changes **nothing** in size.
 
-⚠️ **Size, spelled out (this is a common trap):** the head-less
-`Ternary-Bonsai-2-27B-PTQ1_0.gguf` has the MTP parameters **physically removed** (851 tensors,
-**not a single `blk.64.*`**), so you **cannot** graft into it — `head-graft` exits with
-`no blk.64.* tensors in ...`. The graft source must be the head-bearing file:
+Only the **trained head weights** live in this repository — no model file is redistributed
+(see [What is / is not in this repo](#what-is--is-not-in-this-repo)).
 
-| File | Tensors | Size |
-|---|---|---|
-| `Ternary-Bonsai-2-27B-PTQ1_0.gguf` (head-less) | 851 | 5,946,648,928 B (5.95 GB) |
-| `Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf` (head-bearing, **graft source**) | 866 | 6,297,658,656 B (6.30 GB) |
-| grafted output (`-mtp-distill2`, same length as the row above) | 866 | 6,297,658,656 B |
+| File | Tensors | Size | `block_count` |
+|---|---|---|---|
+| `Ternary-Bonsai-2-27B-PTQ1_0.gguf` (official, **no MTP**) | 851 | 5,946,648,928 B (5.95 GB) | 64 |
+| After adding the MTP structure (= this repo's graft source) | 866 | 6,297,658,656 B (6.30 GB) | 65 |
+| After swapping in the trained head, `-mtp-distill2.gguf` | 866 | 6,297,658,656 B (same as previous row) | 65 |
 
-So the head itself costs **351,009,728 B ≈ 0.351 GB** (0.327 GiB): **351,008,768 B** is the
-15 `blk.64.*` tensors and the remaining ~960 B is the tensor table plus
-`qwen35.nextn_predict_layers`. Grafting does not change the size, but going from the head-less
-file to the head-bearing one grows it by 0.35 GB.
+The 0.351 GB adds up: **351,008,768 B** is exactly the 15 `blk.64.*` tensors (Q6_K big
+matrices + Q8_0 k/v + F32 norms); the remaining ~960 B is the new tensor-table entries and the
+`qwen35.nextn_predict_layers` metadata.
 
-* Base model (graft source): `Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf` (engine `qwen35`, 65 blocks, `blk.64.*` = MTP head)
-* Head: **424.7 M parameters**, fp16 checkpoint → deployment QAT (Q6_K big matrices, Q8_0 k/v, F32 norms)
+* Official base model (**no MTP — add the head first**): `Ternary-Bonsai-2-27B-PTQ1_0.gguf`
+* Head: **424.7 M parameters** across 15 tensors, fp16 checkpoint → deployment QAT (Q6_K big matrices, Q8_0 k/v, F32 norms)
 * Runtime: `llama.cpp` + KVMem fork with `--spec-type draft-mtp`
 
 ---
@@ -183,27 +182,49 @@ scripts/                      .bat / .sh drivers used to run the pipeline on Win
 deploy/bonsai-chat-template.jinja
 ```
 
-**Not in:** the base model, the grafted model, and the hidden-state dumps / self-distillation
-traces (hundreds of GB, fully regenerable — see the commands below). The training corpus was
-built from local agent session transcripts and is intentionally not published.
+**Not in:** the official base model, the head-added / head-trained full models, and the
+hidden-state dumps / self-distillation traces (hundreds of GB, fully regenerable — see the
+commands below). The training corpus was built from local agent session transcripts and is
+intentionally not published.
 
 ## Using the head
 
+The official model has **no** MTP, so the full path is two steps: add the structure, then swap
+the weights.
+
+**Step 1 — give the official model an MTP structure (size +0.351 GB).** This step **appends**
+15 `blk.64.*` tensors and updates the metadata; it is not an in-place edit:
+
 ```bat
-rem 1. export the fp16 tensors from the checkpoint
+rem append an MTP head -> a draft-capable model (the graft source for the rest of the toolchain)
+python tools\graft_mtp.py  Ternary-Bonsai-2-27B-PTQ1_0.gguf  Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf
+```
+
+`tools/graft_mtp.py` fetches the stock Qwen MTP head over HTTP range requests (from the
+`unsloth/Qwen3.8-27B-GGUF` repo on Hugging Face — step 1 therefore needs network access),
+appends its 15 `blk.64.*` tensors to the official model, and sets `qwen35.block_count` 64 → 65
+plus `qwen35.nextn_predict_layers=1`, then self-verifies (`tensors == base+15`,
+`block_count == 65`, `blk.64 present 15/15`). The result is the **"shipped head" baseline**
+used in the metric tables below; its weights are stock Qwen weights and are deliberately *not*
+added to `prism.hadamard.weight_names`.
+
+**Step 2 — replace those 15 tensors with the head trained here (zero size change).** This is
+the in-place step:
+
+```bat
+rem 2a. export the fp16 tensors from the checkpoint
 python tools\export_head.py --ckpt head\distill2\head_final.pt --out head-export
 
-rem 2. patch a byte copy of the HEAD-BEARING model (output length == input length) + verify
+rem 2b. replace in place in a byte copy of the head-bearing model + verify
 graft-head.bat  head\distill2\head_final.pt  Ternary-Bonsai-2-27B-PTQ1_0-mtp-distill2.gguf
 ```
 
-**Mind the graft source:** `scripts/graft-head.bat` sets `BASE` to the head-bearing
-`Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf` (6.30 GB). Pointing it at the head-less file
-(5.95 GB) fails with `no blk.64.* tensors in ...` — by design, not a bug. The output
-`-mtp-distill2.gguf` is **exactly as long as its input, 6,297,658,656 B**; relative to the
-head-less model it is 0.351 GB larger, and that 0.351 GB *is* the head.
+The output `-mtp-distill2.gguf` is exactly as long as **its input** (6,297,658,656 B). Note that
+`graft-head.bat`'s `BASE` must be the **head-bearing** model; pointing it at the official
+head-less file makes `head-graft` exit with `no blk.64.* tensors in ...` — by design, because
+the official file has no tensors to replace; use step 1 to create them first.
 
-`scripts/graft-head.bat` wraps steps 1–3 (`export_head.py` → `head-graft.exe` →
+`scripts/graft-head.bat` wraps step 2's three commands (`export_head.py` → `head-graft.exe` →
 `draft-logits.exe` + `verify_graft.py`). Then serve it and read `spec_stats`:
 
 ```bat
@@ -226,6 +247,9 @@ cmake --build build-win --target draft-logits head-graft mtp-trace mtp-dump -j 8
 Then, end to end:
 
 ```bat
+rem 0. the official model has no MTP: add the structure first; the result feeds every later step
+python tools\graft_mtp.py  Ternary-Bonsai-2-27B-PTQ1_0.gguf  Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf
+
 rem 1. corpus: agent session transcripts -> text (>=100k chars each)
 python tools\extract-sessions.py
 
@@ -253,7 +277,9 @@ python tools\mtp-bench.py --model PATCHED.gguf --n-max 2
 ```
 
 `tools/mtp-retrain-v2.py` orchestrates the whole 4-stage chain (re-dump with `q4_0` →
-generate traces → retrain → export/graft/verify) and is what produced this checkpoint.
+generate traces → retrain → export/graft/verify) and is what produced this checkpoint. Every
+step (dump / trace / the trainer's `--gguf` / the graft) takes the **head-bearing** model
+produced in step 0 as input — the official head-less model is only ever fed to step 0.
 
 ## Rebuilding the head file from the checkpoint
 
