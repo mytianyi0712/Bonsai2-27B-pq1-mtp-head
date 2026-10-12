@@ -23,9 +23,11 @@ place: Q6_K / Q8_0 / F32 with the exact same types).
 | Offline depth-1 trunk-argmax agreement | 66.9 % | **82.3 %** |
 | Offline depth-2 | 51.3 % | **78.2 %** |
 | Offline depth-3 | 44.7 % | **74.5 %** |
+| Decode throughput, `n_max=1` | 40.3 t/s | 41.3 t/s |
 | Decode throughput, `n_max=2` | — | **45.7 t/s** |
-| Decode throughput, shipped head, `n_max=1` (baseline config) | 40.3 t/s | 41.3 t/s (`n=1`) |
-| Prefill | unaffected by the draft head | unaffected |
+| Decode throughput, `n_max=3` | 41.0 t/s | 43.5 t/s |
+| Mean accepted tokens per round τ, `n_max=2` | — | **2.02** |
+| Prefill | not affected by the draft head | not affected |
 
 Online A/B on 10 session prompts at `n_max=3` (weighted by draft events): **74.7 % → 77.7 %**
 (+3.0 points), 7 wins / 2 losses / 1 tie — the harder the prompt, the larger the gain
@@ -228,6 +230,21 @@ python tools\mtp-bench.py --model PATCHED.gguf --n-max 2
 
 `tools/mtp-retrain-v2.py` orchestrates the whole 4-stage chain (re-dump with `q4_0` →
 generate traces → retrain → export/graft/verify) and is what produced this checkpoint.
+
+## Rebuilding the head file from the checkpoint
+
+```bat
+python tools\export_head.py --ckpt head\distill2\head_final.pt --out head-export
+python -c "import torch; sd=torch.load(r'head\distill2\head_final.pt', map_location='cpu'); print(len(sd), sum(v.numel() for v in sd.values())/1e6, 'M params')"
+```
+
+Expected: `15 424.699392 M params`, all tensors fp16, mapped one-to-one onto
+`blk.64.nextn.eh_proj.weight`, `blk.64.nextn.enorm.weight`, `blk.64.nextn.hnorm.weight`,
+`blk.64.attn_norm.weight`, `blk.64.attn_q_norm.weight`, `blk.64.attn_k_norm.weight`,
+`blk.64.post_attention_norm.weight`, `blk.64.attn_{q,k,v,output}.weight`,
+`blk.64.ffn_{gate,up,down}.weight`, `blk.64.nextn.shared_head_norm.weight` (see
+`tools/export_head.py` `NAME_MAP`). SHA-256 of the file in this repo:
+`3c2788d6595c7f751c1cdc82657b31ffe3a67598d6eeb993239a5bb34f43ad54`.
 
 ## Known limits
 
