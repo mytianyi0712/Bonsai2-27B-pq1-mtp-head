@@ -23,9 +23,17 @@ Only the **trained head weights** live in this repository — no model file is r
 | After adding the MTP structure (= this repo's graft source) | 866 | 6,297,658,656 B (6.30 GB) | 65 |
 | After swapping in the trained head, `-mtp-distill2.gguf` | 866 | 6,297,658,656 B (same as previous row) | 65 |
 
-The 0.351 GB adds up: **351,008,768 B** is exactly the 15 `blk.64.*` tensors (Q6_K big
-matrices + Q8_0 k/v + F32 norms); the remaining ~960 B is the new tensor-table entries and the
-`qwen35.nextn_predict_layers` metadata.
+The 0.351 GB adds up (cross-checked byte-for-byte against the HuggingFace original, 15/15):
+
+| Component | Bytes |
+|---|---|
+| Raw data of the 15 `blk.64.*` tensors | 350,993,728 |
+| 32-byte alignment padding | +15,040 |
+| New tensor-table entries + `qwen35.nextn_predict_layers` metadata | +960 |
+| **Total file growth** | **351,009,728** (≈0.351 GB) |
+
+So essentially all of the 0.351 GB is the head weights themselves; the structural overhead is
+only 16 KB.
 
 * Official base model (**no MTP — add the head first**): `Ternary-Bonsai-2-27B-PTQ1_0.gguf`
 * Head: **424.7 M parameters** across 15 tensors, fp16 checkpoint → deployment QAT (Q6_K big matrices, Q8_0 k/v, F32 norms)
