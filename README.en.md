@@ -2,38 +2,54 @@
 
 **English** | [中文](README.md)
 
-The official `Ternary-Bonsai-2-27B-PTQ1_0.gguf` released by PrismML ships **without an MTP draft head** (`block_count=64`, 851 tensors total).
+The official `Ternary-Bonsai-2-27B-PTQ1_0.gguf` released by PrismML ships without an MTP draft head (`block_count=64`, 851 tensors total).
 
-This repository provides a self-distilled MTP (`nextn`) draft head and tooling to graft it onto the official base model. Adding the head introduces block 64 as the draft layer, increasing the file size by ~0.35 GB (5.95 GB → 6.30 GB).
+This repository provides a self-distilled MTP (`nextn`) draft head and tooling to graft it onto the official base model for speculative decoding acceleration. Adding the head introduces block 64, expanding the model to 65 layers and increasing the file size by ~0.35 GB (5.95 GB → 6.30 GB).
 
-On an 8GB VRAM consumer GPU using `llama.cpp` / KVMem speculative decoding (`--spec-type draft-mtp --spec-draft-n-max 2`), real-world decode throughput increases from 40.3 t/s to **45.7 t/s** (+13.4%).
+On an 8GB VRAM consumer GPU paired with `llama.cpp` / KVMem (`--spec-type draft-mtp --spec-draft-n-max 2`), the head maintains stable speculative acceleration across real-world dialog contexts extending up to 240K tokens.
 
 ---
 
-## Benchmarks
+## Measured Performance
 
-### 1. Decode Throughput (Single 8GB GPU, KVMem, Greedy Sampling)
+The following benchmarks are derived from the server runtime logs (`logs/kvmem-server.log`, 131 long-session dialog turns) under real-world multi-turn workloads with Thinking reasoning tokens and memory paging after grafting the self-trained head (`distill2`):
 
-| Configuration | Decode Speed | Mean Accepted Tokens (τ) | Acceptance Rate |
-|---|---|---|---|
-| Base model + Stock Qwen head (`n=1`) | 40.3 t/s | 1.58 | 57.5% |
-| Base model + Stock Qwen head (`n=3`) | 41.0 t/s | 2.08 | 36.1% |
-| **Base model + Distilled head (`n=2`, Recommended)** | **45.7 t/s** | **2.02** | **51.3%** |
-| Base model + Distilled head (`n=3`) | 43.5 t/s | 2.22 | 40.9% |
+### 1. Long-Term Runtime Statistics (Real-World Workloads, n_max=2)
 
-> Note: `n=2` provides the highest overall throughput. While `n=3` yields more accepted tokens per round, the additional verification overhead outweighs the benefit. Prefill latency is completely unaffected by the draft head.
+| Metric | Measured Value |
+|---|---|
+| Total Prompt Tokens Processed | 14,284,924 tokens (covering 2.4K ~ 244.6K ultra-long contexts) |
+| Total Output Tokens Generated | 113,718 tokens |
+| Total Speculative Tokens Drafted | 103,672 tokens |
+| Total Speculative Tokens Accepted | 62,013 tokens |
+| **Cumulative Global Acceptance Rate** | **59.82%** (Per-turn median: 61.50%, Peak: 94.10%) |
+| **Decode Throughput** | **Median: 35.89 t/s, Peak: 55.54 t/s** (Short-context mean: 48.7 t/s) |
 
-### 2. Trunk Argmax Alignment (Offline Eval, 32 Chunks / 16,384 Rows)
+### 2. Performance Across Context Window Depths
 
-The head is trained to predict the frozen trunk model's own argmax decisions:
+Under KVMem dynamic memory tiering, decode throughput and acceptance rates across different prompt lengths:
 
-| Draft Depth | Stock Qwen Head | **Distilled Head (distill2)** | Delta |
+| Context Window (Prompt) | Turns | Tokens Generated | Mean Decode Speed | Speed Range | Acceptance Rate |
+|---|---|---|---|---|---|
+| 0 ~ 10K (Short text) | 6 | 1,408 | **48.75 t/s** | 40.5 ~ 55.5 t/s | 56.00% |
+| 10K ~ 30K (Standard dialog) | 11 | 2,672 | **45.63 t/s** | 35.2 ~ 52.1 t/s | **64.56%** |
+| 30K ~ 70K (Long context) | 36 | 36,920 | 32.18 t/s | 22.5 ~ 44.9 t/s | 58.68% |
+| 70K ~ 150K (Ultra-long context) | 38 | 42,013 | 34.26 t/s | 25.9 ~ 43.1 t/s | 59.62% |
+| 150K ~ 245K (Extreme context) | 40 | 30,705 | 33.83 t/s | 20.2 ~ 46.0 t/s | **61.27%** |
+
+> **Key Observations**:
+> 1. Acceptance rate remains remarkably stable across the entire 240K window, maintaining **61.27%** even at 150K~245K depths.
+> 2. Decode speed averages **45 ~ 55 t/s** in short and standard contexts. In deep contexts (>30K tokens), retrieval and memory paging overhead bring decode speed to **32 ~ 35 t/s**, still offering significant acceleration over the baseline (~20 ~ 22 t/s without MTP).
+
+### 3. Offline Argmax Alignment Evaluation (32 Chunks / 16,384 Rows)
+
+The training target aligns directly with the trunk model's own output predictions:
+
+| Prediction Depth | Stock Qwen Head | **Trained Head (distill2)** | Improvement |
 |---|---|---|---|
 | depth 1 | 66.9% | **82.3%** | +15.4% |
 | depth 2 | 51.3% | **78.2%** | +26.9% |
 | depth 3 | 44.7% | **74.5%** | +29.8% |
-
-In online A/B tests across 10 long-context prompt traces (`n_max=3`), weighted acceptance rate improved from 74.7% to 77.7% (7 wins, 2 losses, 1 tie), with the largest gains observed on complex prompts (+7.6% and +6.8%). Under greedy sampling, generated text output is byte-for-byte identical to the non-speculative baseline.
 
 ---
 
@@ -134,14 +150,6 @@ Full logs are archived in `logs/distill2.log` and `logs/distill1.log`.
 ├── scripts/                      # Windows batch automation scripts
 └── logs/                         # Training and benchmark logs
 ```
-
----
-
-## Notes & Tradeoffs
-
-1. **Short prompts show minimal speedup**: On short context windows (<2K tokens), stock head acceptance is already ~95%+, leaving little room for acceleration. Gains concentrate in 8K+ long context and complex reasoning traces.
-2. **Temperature sensitivity**: Benchmarks reflect greedy decoding (`temp=0`). Higher sampling temperatures increase trunk stochasticity, reducing acceptance rates to ~36%-50%.
-3. **Training data privacy**: Training data was drawn from local interactive sessions and contains private context; it is not published. Trace extraction scripts are provided in `tools/` for users wishing to train on custom corpora.
 
 ---
 
