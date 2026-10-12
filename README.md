@@ -1,30 +1,32 @@
-# Bonsai2-27B — PTQ1_0 + 自蒸馏 MTP 草稿头
+# Bonsai2-27B — 为无 MTP 的官方模型补上自蒸馏 MTP 草稿头
 
 [English](README.en.md) | **中文**
 
-`Ternary-Bonsai-2-27B-PTQ1_0`（架构 `qwen35`，PrismML PTQ1_0 三值主干，256K 上下文）的
-**MTP（multi-token prediction / `nextn`）草稿头**，用自蒸馏训练，直接替换模型自带的头。
+`Ternary-Bonsai-2-27B-PTQ1_0`（架构 `qwen35`，PrismML PTQ1_0 三值主干，256K 上下文）
+**官方发布的 GGUF 是不带 MTP 头的**（`Ternary-Bonsai-2-27B-PTQ1_0.gguf`：`block_count=64`，
+851 个张量，`blk.64.*` 一个都没有）。本仓库提供的就是**补上 MTP 能力所需的那一个头**，
+并用自蒸馏把它从"能跑"训到"好用"：
 
-本仓库只放**头权重**，不重新分发基础模型（见 [仓库里有什么 / 没有什么](#仓库里有什么--没有什么)）。
-这个头是补丁式的：嫁接把 15 个 `blk.64.*` 张量按各自原类型（Q6_K / Q8_0 / F32）**就地改写**，
-其余字节不动，因此嫁接产物与**输入文件**等长。
+1. **先补结构** —— 取一个 MTP 头（15 个 `blk.64.*` 张量）追加进官方模型，得到可做投机解码的
+   带头模型：`block_count` 64 → 65，新增 `qwen35.nextn_predict_layers=1`，**体积 +0.351 GB**。
+   这一步是**纯追加**，会把文件变大，不是原地改。
+2. **再换权重** —— 把本仓库训练出的头 **原地替换**掉那 15 个张量（按各自原类型 Q6_K / Q8_0 / F32
+   就地改写，其余字节不动），得到本仓库的 `-mtp-distill2.gguf`。替换这一步**体积零变化**。
 
-⚠️ **体积必须说清（常见误解）**：无头版 `Ternary-Bonsai-2-27B-PTQ1_0.gguf` 是
-**直接把 MTP 相关参数剔除了的**（851 个张量，**一个 `blk.64.*` 都没有**），所以**不能**把
-头嫁接进无头版 —— `head-graft` 会因为找不到 `blk.64.*` 而直接报错退出。嫁接源必须是**带头版**：
+本仓库只放**训练出的头权重**，不重新分发任何模型文件（见
+[仓库里有什么 / 没有什么](#仓库里有什么--没有什么)）。
 
-| 文件 | 张量数 | 体积 |
-|---|---|---|
-| `Ternary-Bonsai-2-27B-PTQ1_0.gguf`（无头） | 851 | 5,946,648,928 B（5.95 GB） |
-| `Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf`（含头，**嫁接源**） | 866 | 6,297,658,656 B（6.30 GB） |
-| 嫁接产物（`-mtp-distill2`，等长于上一行） | 866 | 6,297,658,656 B |
+| 文件 | 张量数 | 体积 | `block_count` |
+|---|---|---|---|
+| `Ternary-Bonsai-2-27B-PTQ1_0.gguf`（官方，**无 MTP**） | 851 | 5,946,648,928 B（5.95 GB） | 64 |
+| 补上 MTP 结构后的带头模型（= 本仓库的嫁接源） | 866 | 6,297,658,656 B（6.30 GB） | 65 |
+| 换成训练头后的产物 `-mtp-distill2.gguf` | 866 | 6,297,658,656 B（与上一行等长） | 65 |
 
-头带来的体积增量 = **351,009,728 B ≈ 0.351 GB**（0.327 GiB），其中
-**351,008,768 B** 正是 15 个 `blk.64.*` 张量的字节和，剩下 ~960 B 是张量表 + `qwen35.nextn_predict_layers`
-元数据。也就是说：**嫁接不会改变体积，但从无头版换到带头版会增大 0.35 GB。**
+0.351 GB 的账能对上：**351,008,768 B** = 15 个 `blk.64.*` 张量的精确字节和（Q6_K 大矩阵 +
+Q8_0 k/v + F32 norm），其余 ~960 B 是张量表新增条目与 `qwen35.nextn_predict_layers` 元数据。
 
-* 基础模型（嫁接源）：`Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf`（引擎 `qwen35`，65 层，`blk.64.*` = MTP 头）
-* 头：**424.7 M 参数**，fp16 检查点 → 按部署类型做 QAT（大矩阵 Q6_K，k/v Q8_0，norm F32）
+* 官方基础模型（**无 MTP，需先补头**）：`Ternary-Bonsai-2-27B-PTQ1_0.gguf`
+* 头：**424.7 M 参数**，15 个张量，fp16 检查点 → 按部署类型做 QAT（大矩阵 Q6_K，k/v Q8_0，norm F32）
 * 运行时：`llama.cpp` + KVMem fork，`--spec-type draft-mtp`
 
 ---
@@ -170,25 +172,43 @@ scripts/                      Windows 上跑整条流水线的 .bat / .sh 驱动
 deploy/bonsai-chat-template.jinja
 ```
 
-**没有：** 基础模型、打过补丁的完整模型、隐藏态 dump 与自蒸馏轨迹（数百 GB，可完整再生成 ——
-见下面命令）。训练语料由本机会话记录抽取而成，有意不公开。
+**没有：** 官方基础模型、补过头与训过头之后的完整模型、隐藏态 dump 与自蒸馏轨迹
+（数百 GB，可完整再生成 —— 见下面命令）。训练语料由本机会话记录抽取而成，有意不公开。
 
 ## 怎么用这个头
 
+官方模型**没有** MTP，所以完整路径是「先补结构，再换权重」两步。
+
+**步骤 1 —— 给官方模型补上 MTP 结构（体积 +0.351 GB）。** 这一步是**追加** 15 个
+`blk.64.*` 张量并更新元数据，不是在原文件上就地改：
+
 ```bat
-rem 1. 从检查点导出 fp16 张量
+rem 追加一个 MTP 头 -> 得到带头模型（本仓库工具链的嫁接源）
+python tools\graft_mtp.py  Ternary-Bonsai-2-27B-PTQ1_0.gguf  Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf
+```
+
+`tools/graft_mtp.py` 会用 HTTP range 请求从 `unsloth/Qwen3.8-27B-GGUF`（HuggingFace）拉取
+Qwen 原生 MTP 头（**步骤 1 需要联网**），把它的 15 个 `blk.64.*` 张量追加到官方模型末尾，
+并把 `qwen35.block_count` 64 → 65、补上 `qwen35.nextn_predict_layers=1`，末尾自校验
+（`tensors == base+15`、`block_count == 65`、`blk.64 present 15/15`）。这一步的结果就是下面指标表里的
+**"原装头"基线**；它的权重是 Qwen 原生权重，因此**有意不**加入 `prism.hadamard.weight_names`。
+
+**步骤 2 —— 用本仓库训练出的头替换那 15 个张量（体积零变化）。** 这一步才是**原地改**：
+
+```bat
+rem 2a. 从检查点导出 fp16 张量
 python tools\export_head.py --ckpt head\distill2\head_final.pt --out head-export
 
-rem 2. 补丁进【带头版】的字节副本（体积与源文件相同）+ 验证
+rem 2b. 原地替换进带头模型的字节副本 + 验证
 graft-head.bat  head\distill2\head_final.pt  Ternary-Bonsai-2-27B-PTQ1_0-mtp-distill2.gguf
 ```
 
-**注意嫁接源**：`scripts/graft-head.bat` 里的 `BASE` 是带头版
-`Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf`（6.30 GB）。传无头版（5.95 GB）进去会以
-`no blk.64.* tensors in ...` 失败退出 —— 那是设计如此，不是 bug。产物 `-mtp-distill2.gguf`
-与源文件**等长 6,297,658,656 B**；相对无头版则大 0.351 GB（那 0.351 GB 就是头本身）。
+产物 `-mtp-distill2.gguf` 与**它的输入**等长（6,297,658,656 B）。注意
+`graft-head.bat` 里的 `BASE` 必须是**带头模型**；若指向官方无头模型，`head-graft` 会以
+`no blk.64.* tensors in ...` 退出（那是设计如此 —— 官方模型里没有可替换的张量，
+要用步骤 1 先补出来）。
 
-`scripts/graft-head.bat` 封装了这三步（`export_head.py` → `head-graft.exe` →
+`scripts/graft-head.bat` 封装了步骤 2 的三步（`export_head.py` → `head-graft.exe` →
 `draft-logits.exe` + `verify_graft.py`）。然后起服务，读 `spec_stats`：
 
 ```bat
@@ -210,6 +230,9 @@ cmake --build build-win --target draft-logits head-graft mtp-trace mtp-dump -j 8
 然后端到端：
 
 ```bat
+rem 0. 官方模型无 MTP：先补结构，产出一个带头模型作为后续所有工具链的输入
+python tools\graft_mtp.py  Ternary-Bonsai-2-27B-PTQ1_0.gguf  Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf
+
 rem 1. 语料：会话记录 -> 文本（每个文件 >=100k 字符）
 python tools\extract-sessions.py
 
@@ -237,7 +260,8 @@ python tools\mtp-bench.py --model PATCHED.gguf --n-max 2
 ```
 
 `tools/mtp-retrain-v2.py` 编排了完整四阶段链（用 `q4_0` 重导 → 生成轨迹 → 重训 →
-导出/嫁接/验证），本次检查点就是它产出的。
+导出/嫁接/验证），本次检查点就是它产出的。注意全流程（dump / trace / 训练时的 `--gguf` /
+嫁接）都以上一步产出的**带头模型**为输入 —— 官方无头模型只能喂给步骤 0。
 
 ## 从检查点重建头文件
 
