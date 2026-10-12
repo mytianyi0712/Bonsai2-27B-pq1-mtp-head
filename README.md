@@ -1,88 +1,82 @@
-# Bonsai2-27B — PQ1_0 + distilled MTP draft head
+# Bonsai2-27B — PTQ1_0 + 自蒸馏 MTP 草稿头
 
-A self-distilled **MTP (multi-token prediction / `nextn`) draft head** for
-`Ternary-Bonsai-2-27B-PTQ1_0` (architecture `qwen35`, PrismML PTQ1_0 ternary trunk,
-256K context), trained as a direct replacement for the shipped head.
+[English](README.en.md) | **中文**
 
-Only the **head weights** live in this repository — the base model is not redistributed
-here (see [What is / is not in this repo](#what-is--is-not-in-this-repo)). The head is a
-drop-in patch: grafting it into a copy of the base GGUF changes **15 tensors** and the
-file size stays byte-identical (the graft tool rewrites the existing quantized blocks in
-place: Q6_K / Q8_0 / F32 with the exact same types).
+`Ternary-Bonsai-2-27B-PTQ1_0`（架构 `qwen35`，PrismML PTQ1_0 三值主干，256K 上下文）的
+**MTP（multi-token prediction / `nextn`）草稿头**，用自蒸馏训练，直接替换模型自带的头。
 
-* Base model: `Ternary-Bonsai-2-27B-PTQ1_0.gguf` (engine `qwen35`, 65 blocks, `blk.64.*` = MTP head)
-* Head: **424.7 M parameters**, fp16 checkpoint → deployment QAT (Q6_K big matrices, Q8_0 k/v, F32 norms)
-* Runtime: `llama.cpp` + KVMem fork with `--spec-type draft-mtp`
+本仓库只放**头权重**，不重新分发基础模型（见 [仓库里有什么 / 没有什么](#仓库里有什么--没有什么)）。
+这个头是补丁式的：嫁接到基础 GGUF 的副本上只改 **15 个张量**，文件体积**一字不变**
+（嫁接工具按原张量类型就地改写：Q6_K / Q8_0 / F32 与原类型完全一致）。
+
+* 基础模型：`Ternary-Bonsai-2-27B-PTQ1_0.gguf`（引擎 `qwen35`，65 层，`blk.64.*` = MTP 头）
+* 头：**424.7 M 参数**，fp16 检查点 → 按部署类型做 QAT（大矩阵 Q6_K，k/v Q8_0，norm F32）
+* 运行时：`llama.cpp` + KVMem fork，`--spec-type draft-mtp`
 
 ---
 
-## Headline numbers
+## 核心指标
 
-| Metric (all measured, see [Evidence](#evidence--log-excerpts)) | shipped head | **distill2 (this repo)** |
+| 指标（全部为实测，见[证据](#证据--日志摘录)） | 原装头 | **distill2（本仓库）** |
 |---|---|---|
-| Offline depth-1 trunk-argmax agreement | 66.9 % | **82.3 %** |
-| Offline depth-2 | 51.3 % | **78.2 %** |
-| Offline depth-3 | 44.7 % | **74.5 %** |
-| Decode throughput, `n_max=1` | 40.3 t/s | 41.3 t/s |
-| Decode throughput, `n_max=2` | — | **45.7 t/s** |
-| Decode throughput, `n_max=3` | 41.0 t/s | 43.5 t/s |
-| Mean accepted tokens per round τ, `n_max=2` | — | **2.02** |
-| Prefill | not affected by the draft head | not affected |
+| 离线 depth-1 躯干-argmax 一致率 | 66.9 % | **82.3 %** |
+| 离线 depth-2 | 51.3 % | **78.2 %** |
+| 离线 depth-3 | 44.7 % | **74.5 %** |
+| decode 速度 `n_max=1` | 40.3 t/s | 41.3 t/s |
+| decode 速度 `n_max=2` | — | **45.7 t/s** |
+| decode 速度 `n_max=3` | 41.0 t/s | 43.5 t/s |
+| 每轮平均接受 token 数 τ，`n_max=2` | — | **2.02** |
+| prefill | 不受草稿头影响 | 不受草稿头影响 |
 
-Online A/B on 10 session prompts at `n_max=3` (weighted by draft events): **74.7 % → 77.7 %**
-(+3.0 points), 7 wins / 2 losses / 1 tie — the harder the prompt, the larger the gain
-(`+7.6`, `+6.8` points on the two longest/hardest ones); at `n_max=1` on the long prompt
-**80.3 % → 88.2 %**. Greedy output was **byte-identical** in every A/B run.
+10 个真实会话提示词的在线 A/B（`n_max=3`，按草案事件加权）：**74.7 % → 77.7 %**
+（+3.0 点），7 胜 / 2 负 / 1 平 —— **越难的提示词增益越大**（两个最长/最难的提示词分别
++7.6、+6.8 点）；长提示词在 `n_max=1` 下 **80.3 % → 88.2 %**。所有 A/B 的贪婪生成文本
+**逐字节相同**。
 
 ---
 
-## What the head is
+## 这个头是什么
 
-Per `src/models/qwen35.cpp` (`graph_mtp`) and `common/speculative.cpp` (`draft-mtp`), one MTP
-row at position `q` is built from the token `x_q` plus the trunk hidden state `h_{q-1}`
-(**post final-norm**, the LM-head input), and it scores `x_{q+1}`:
+依据 `src/models/qwen35.cpp`（`graph_mtp`）与 `common/speculative.cpp`（`draft-mtp`），位置 `q`
+的一行 MTP 由 token `x_q` 加上躯干隐藏态 `h_{q-1}`（**final-norm 之后**，即 LM head 的输入）
+构成，预测 `x_{q+1}`：
 
 ```
-tok_embd(x_q) → Hadamard inverse (rotate, then sign)   # prism.hadamard.inverse_weight_names
-  → RMSNorm(enorm) ‖ RMSNorm(hnorm)                    # concat (e first, h second) 10240
+tok_embd(x_q) → Hadamard 逆变换（先旋转，后符号）      # prism.hadamard.inverse_weight_names
+  → RMSNorm(enorm) ‖ RMSNorm(hnorm)                  # 拼接（e 在前、h 在后）10240
   → eh_proj 10240→5120
-  → full attention block: attn_norm → attn_q (12288 = interleaved [q(256)|gate(256)] per head)
-      → per-head q_norm → gate = sigmoid(second half) → attn_k/attn_v (4×256)
-      → per-head k_norm → RoPE (sections [11,11,10,0], query position = q)
-      → attn × sigmoid(gate) → attn_output → +residual → post_attention_norm → SwiGLU FFN → +residual
-  → RMSNorm(shared_head_norm) → shared output.weight → logits
+  → 完整注意力块：attn_norm → attn_q（12288 = 逐头交错的 [q(256)|gate(256)]）
+      → per-head q_norm → gate = sigmoid(后半) → attn_k/attn_v（4×256）
+      → per-head k_norm → RoPE（sections [11,11,10,0]，查询位置 = q）
+      → attn × sigmoid(gate) → attn_output → +残差 → post_attention_norm → SwiGLU FFN → +残差
+  → RMSNorm(shared_head_norm) → 共享 output.weight → logits
 ```
 
-Two non-obvious conventions the training code reproduces exactly (both were validated by
-logits alignment against `llama.cpp`, per-row cosine ≥ 0.9999):
+训练代码精确复现了两个不显眼的约定（都用 `llama.cpp` 逐 logits 对齐验证过，逐行 cos ≥ 0.9999）：
 
-1. **GGML dimension order.** `ne[0]` varies fastest, so the numpy/torch shape is
-   `reversed(ne)` and must **never** be transposed. A `reshape(ne).t()` produces correct
-   values in a scrambled order (`cos ≈ 0`).
-2. **Row semantics.** Rows are indexed by `(x_q, h_{q-1})`, RoPE position `q`, target `x_{q+1}`.
-   At depth ≥ 2 the token is ground truth but the hidden state is the head's own previous
-   depth output — i.e. inference self-feeds, so the training chain does too.
+1. **GGML 维度序。** `ne[0]` 变化最快，因此 numpy/torch 形状是 `reversed(ne)`，**绝不能转置**。
+   `reshape(ne).t()` 会让值正确但排列全错（`cos ≈ 0`）。
+2. **行语义。** 行按 `(x_q, h_{q-1})` 索引，RoPE 位置 `q`，目标 `x_{q+1}`。深度 ≥ 2 时 token 用
+   真值，但隐藏态用的是本头上一深度的输出 —— 推理时自喂，所以训练链也必须自喂。
 
-## How it was trained
+## 怎么训练的
 
-Trunk-argmax distillation, fp16 native, one full attention block per step, chain depth 3:
+躯干-argmax 蒸馏、fp16 原生、每步一个完整注意力块、链深 3：
 
-| Item | Value |
+| 项 | 值 |
 |---|---|
-| Objective | CE against the **frozen trunk's own argmax** (offline `head.lm_logits(h_dump)`), not against corpus text |
-| Chain | `n=3` self-feeding chain (`forward_chain`), attention = window rows (pos ≤ anchor) + shallower rows of the same chain + self |
-| Init | the **shipped** head (a trunk-faithful starting point) |
-| Data | self-distillation traces generated with the real chat template + thinking + `q4_0` KV (**496,058 rows**, ×3 sampling weight) + `q4_0` corpus re-dump (**800,768 rows**) |
-| Precision | fp16 weights/matmul, fp32 master weights + AdamW on CPU, QAT round-trip through the **deployment** types (Q6_K / Q8_0) |
-| Cost | 9,996 steps / 113.3 min / peak VRAM 6.82 GiB / 1,507 tok/s |
+| 目标 | CE 对齐**冻结躯干自身的 argmax**（离线 `head.lm_logits(h_dump)` 现算），不是对齐语料文本 |
+| 链 | `n=3` 自喂链（`forward_chain`），注意力 = 窗口行（位置 ≤ 锚点）+ 本链更浅的行 + 自身 |
+| 初始化 | **原装头**（起点已经是躯干的忠实近似） |
+| 数据 | 用真实聊天模板 + 思考 + `q4_0` KV 生成的自蒸馏轨迹（**496,058 行**，×3 采样权重）+ `q4_0` 语料重导（**800,768 行**） |
+| 精度 | fp16 权重/matmul，fp32 master 权重 + AdamW 放 CPU，QAT 按**部署**类型往返（Q6_K / Q8_0） |
+| 成本 | 9,996 步 / 113.3 分钟 / 峰值显存 6.82 GiB / 1,507 tok/s |
 
-Why distill the argmax instead of the text: acceptance is decided by
-`draft argmax == trunk argmax`. The trunk agrees with the raw corpus text only ~66 % of the
-time, so a head trained on text becomes *better at the text than the trunk is* and drifts
-away from it. Measured: text-CE head 70.7 % acceptance vs distilled head 80.3 %
-(same prompt, `n_max=1`).
+为什么不直接用语料文本训练：验收率由 `草稿 argmax == 躯干 argmax` 决定，而躯干自身与语料原文
+只有约 66 % 一致 —— 用文本训出来的头会**比躯干更会写这段文本**，于是偏离躯干、验收率反降。
+实测：文本-CE 头 70.7 % vs 蒸馏头 80.3 %（同一提示词，`n_max=1`）。
 
-Training curves (held-out chunks) from `logs/distill2.log`:
+训练曲线（held-out chunk），摘自 `logs/distill2.log`：
 
 ```
 [train] step  500 VAL trunk-argmax depth1:79.2% | depth2:74.8% | depth3:72.6%
@@ -93,11 +87,11 @@ Training curves (held-out chunks) from `logs/distill2.log`:
 [train] done in 113.3 min -> D:\models\mtp-train\distill2\head_final.pt
 ```
 
-## Evidence / log excerpts
+## 证据 / 日志摘录
 
-Everything below is copied verbatim from the files in this repo.
+以下全部逐字摘自本仓库内的文件。
 
-**Final validation (this head)** — `logs/distill2.log`
+**本头的最终验证** —— `logs/distill2.log`
 
 ```
 [train] initialized from D:\models\mtp-train\distill1\head_final.pt
@@ -108,167 +102,156 @@ Everything below is copied verbatim from the files in this repo.
 [train] done in 113.3 min -> D:\models\mtp-train\distill2\head_final.pt
 ```
 
-**Previous iteration (distill1, kept for reference)** — `logs/distill1.log`
+**上一轮迭代（distill1，留作对照）** —— `logs/distill1.log`
 
 ```
 [train] FINAL VAL trunk-argmax agreement depth1:80.0% | depth2:75.7% | depth3:74.0%
 [train] done in 128.5 min -> D:\models\mtp-train\distill1\head_final.pt
 ```
 
-**Raw acceptance traces** — `logs/ab-n*.log`. Each file is one `llama-kvmem-server` run with
-`KVMEM_TRACE=1`; stop the log at the `spec_stats` line to read the acceptance of that run.
-These particular logs were captured with the **shipped** head, so they document the harness
-and the baseline distribution rather than the gain:
+**验收原始日志** —— `logs/ab-n*.log`。每个文件是一次 `llama-kvmem-server` 运行
+（`KVMEM_TRACE=1`），读到该次运行结束的 `spec_stats` 行即可得该次接受率。**注意**：这几个日志
+是用**原装头**跑的，因此它们记录的是测量口径与基线分布，而不是增益本身：
 
 ```
-=== ab-n1.log,  n_max = 1  (shipped head) ===
+=== ab-n1.log,  n_max = 1  (原装头) ===
 KVMEM_TRACE spec_stats n_gen=300 n_drafted=198 n_accept=102 n_restore=0 accept_pct=51.5
 KVMEM_TRACE spec_stats n_gen=291 n_drafted=147 n_accept=145 n_restore=0 accept_pct=98.6
 
-=== ab-n2.log,  n_max = 2  (shipped head) ===
+=== ab-n2.log,  n_max = 2  (原装头) ===
 KVMEM_TRACE spec_stats n_gen=300 n_drafted=349 n_accept=125 n_restore=0 accept_pct=35.8
 
-=== ab-n3.log,  n_max = 3  (shipped head) ===
+=== ab-n3.log,  n_max = 3  (原装头) ===
 KVMEM_TRACE spec_stats n_gen=300 n_drafted=504 n_accept=131 n_restore=0 accept_pct=26.0
 ```
 
-Acceptance is a property of the *content*, not just the head — prose and structured
-(JSON/tool-call) tokens accept far worse than numeric sections (the same build shows >95 %
-on digit runs). `accept_pct` is **per drafted token**, so values from different `n_max`
-are not comparable; compare `t/s` across `n_max`.
+接受率是**内容**的函数，不只是头的函数 —— 散文与结构化（JSON / 工具调用）token 的接受率远低于
+数字片段（同一构建在纯数字段上 >95 %）。`accept_pct` 是**每草案 token**口径，不同 `n_max`
+的值不可横比；跨 `n_max` 请比 `t/s`。
 
-**Graft verification.** The exported fp16 tensors are quantized to each tensor's deployment
-type and patched into a byte copy of the base model; `draft-logits` re-runs the MTP graph on
-the patched file and the same rows are replayed through the checkpoint in PyTorch
-(`tools/verify_graft.py`):
+**嫁接一致性验证。** 导出的 fp16 张量先量化到各自的部署类型，再补丁进基础模型的字节副本；
+`draft-logits` 在打过补丁的文件上重跑 MTP 图，同一批行再在 PyTorch 里过一遍检查点
+（`tools/verify_graft.py`）：
 
-| Check | Result |
+| 检查 | 结果 |
 |---|---|
-| Block output, per-row cosine | min 0.9990, mean ≈0.9998 |
-| Last-row logits cosine | 0.999951 |
-| top-1 / top-10 | match / 10 of 10 |
-| Greedy text in the acceptance A/B | byte-identical in every run |
+| 块输出逐行 cos | min 0.9990，均值 ≈0.9998 |
+| 末行 logits cos | 0.999951 |
+| top-1 / top-10 | 命中 / 10 中 10 |
+| 验收 A/B 中的贪婪文本 | 每次运行都逐字节相同 |
 
-*(Offline depth agreement from the 32+32 chunk / 16,384-row measurement; the 8-chunk
-validation line printed inside the training log is the one quoted above.)*
+*（离线各深度一致率来自 32+32 chunk / 16,384 行的复核测量；上面引用的训练日志里那行是 8-chunk
+口径，两者数值不同，请勿混用。）*
 
-## What is / is not in this repo
+## 仓库里有什么 / 没有什么
 
-**In:**
+**有：**
 
 ```
-head/distill2/head_final.pt   849 MB — 15 fp16 tensors (the head), tracked with Git LFS
-logs/                         training logs + acceptance traces (verbatim)
-tools/                        python pipeline (dump → trace → train → export → graft → verify)
-tools/native/                 the four C++ tools that live in llama.cpp/tools/
-scripts/                      .bat / .sh drivers used to run the pipeline on Windows
+head/distill2/head_final.pt   849 MB —— 15 个 fp16 张量（头本体），Git LFS 跟踪
+logs/                         训练日志 + 验收原始日志（逐字，未删改）
+tools/                        python 流水线（dump → trace → train → export → graft → verify）
+tools/native/                 四个放进 llama.cpp/tools/ 的 C++ 工具源码
+scripts/                      Windows 上跑整条流水线的 .bat / .sh 驱动
 deploy/bonsai-chat-template.jinja
 ```
 
-**Not in:** the base model, the grafted model, and the hidden-state dumps / self-distillation
-traces (hundreds of GB, fully regenerable — see the commands below). The training corpus was
-built from local agent session transcripts and is intentionally not published.
+**没有：** 基础模型、打过补丁的完整模型、隐藏态 dump 与自蒸馏轨迹（数百 GB，可完整再生成 ——
+见下面命令）。训练语料由本机会话记录抽取而成，有意不公开。
 
-## Using the head
+## 怎么用这个头
 
 ```bat
-rem 1. export the fp16 tensors from the checkpoint
+rem 1. 从检查点导出 fp16 张量
 python tools\export_head.py --ckpt head\distill2\head_final.pt --out head-export
 
-rem 2. patch a byte copy of the base model (size unchanged) + verify
+rem 2. 补丁进基础模型的字节副本（体积不变）+ 验证
 graft-head.bat  head\distill2\head_final.pt  Ternary-Bonsai-2-27B-PTQ1_0-mtp-distill2.gguf
 ```
 
-`scripts/graft-head.bat` wraps steps 1–3 (`export_head.py` → `head-graft.exe` →
-`draft-logits.exe` + `verify_graft.py`). Then serve it and read `spec_stats`:
+`scripts/graft-head.bat` 封装了这三步（`export_head.py` → `head-graft.exe` →
+`draft-logits.exe` + `verify_graft.py`）。然后起服务，读 `spec_stats`：
 
 ```bat
-scripts\ab-accept.bat  <patched.gguf>  <prompt.txt>  256  2
+scripts\ab-accept.bat  <打过补丁的.gguf>  <提示词.txt>  256  2
 ```
 
-Measured sweet spot on the 8 GB test machine: **`n_max=2`** (45.7 t/s vs 40.3 t/s for the
-shipped head at `n_max=1`, i.e. **+13.4 %**). `n_max=3` has the highest mean acceptance
-length (τ 2.22) but is slower than `n_max=2` because each extra draft row costs a verify.
+在 8 GB 显存的测试机上实测的甜点配置是 **`n_max=2`**（45.7 t/s vs 原装头 `n_max=1` 的
+40.3 t/s，即 **+13.4 %**）。`n_max=3` 的平均接受长度最高（τ 2.22），但比 `n_max=2` 慢，
+因为每一行额外草案都要付一次 verify 的钱。
 
-## Regenerating the pipeline
+## 复现整条流水线
 
-The native tools are additions to `llama.cpp/tools/`, so drop them into a `llama.cpp`
-checkout (or the KVMem fork) and build:
+native 工具是 `llama.cpp/tools/` 下的新增项，把它们放进 `llama.cpp` 检出（或 KVMem fork）后构建：
 
 ```bat
 cmake --build build-win --target draft-logits head-graft mtp-trace mtp-dump -j 8
 ```
 
-Then, end to end:
+然后端到端：
 
 ```bat
-rem 1. corpus: agent session transcripts -> text (>=100k chars each)
+rem 1. 语料：会话记录 -> 文本（每个文件 >=100k 字符）
 python tools\extract-sessions.py
 
-rem 2. hidden states: (token, post-final-norm h) per position, with the deployment KV type
+rem 2. 隐藏态：每个位置的 (token, final-norm 后的 h)，用部署同款 KV 量化
 mtp-dump.exe -m BASE.gguf --list filelist.txt --out dump --chunk 2048 --ub 1024 ^
              --max-tokens 8500000 --ngl 99 --threads 8 -ctk q4_0 -ctv q4_0
 
-rem 3. self-distillation traces with the real template + thinking
+rem 3. 用真实模板 + 思考生成自蒸馏轨迹
 mtp-trace.exe -m BASE.gguf --prompts trace-prompts.txt --out traces ^
               --template-file bonsai-chat-template.jinja --max-new 700 --chunk 1024 ^
               --ctk q4_0 --ctv q4_0 --ngl 99 --threads 8
 python tools\mtp-trace-merge.py --src traces --out traces-merged --min-rows 520
 
-rem 4. train (trunk-argmax distillation, n=3 self-feeding chain, deployment QAT)
+rem 4. 训练（躯干-argmax 蒸馏，n=3 自喂链，部署同型 QAT）
 python tools\train_mtp.py --data dump --data traces-merged --data traces-merged --data traces-merged ^
        --out run --init-from shipped-head.pt --device cuda --seq 512 --batch 2 ^
        --epochs 2 --lr 3e-5 --accum 8 --val-every 500 --objective distill --steps 3 --qat deploy
 
-rem 5. graft + verify + measure
+rem 5. 嫁接 + 验证 + 测速
 python tools\export_head.py --ckpt run\head_final.pt --out head-export
 head-graft.exe --src BASE.gguf --out PATCHED.gguf --weights head-export
-draft-logits.exe -m PATCHED.gguf --tokens <64 real token ids> --out verify-dir
+draft-logits.exe -m PATCHED.gguf --tokens <64 个真实 token id> --out verify-dir
 python tools\verify_graft.py --val verify-dir --ckpt run\head_final.pt
 python tools\mtp-bench.py --model PATCHED.gguf --n-max 2
 ```
 
-`tools/mtp-retrain-v2.py` orchestrates the whole 4-stage chain (re-dump with `q4_0` →
-generate traces → retrain → export/graft/verify) and is what produced this checkpoint.
+`tools/mtp-retrain-v2.py` 编排了完整四阶段链（用 `q4_0` 重导 → 生成轨迹 → 重训 →
+导出/嫁接/验证），本次检查点就是它产出的。
 
-## Rebuilding the head file from the checkpoint
+## 从检查点重建头文件
 
 ```bat
 python tools\export_head.py --ckpt head\distill2\head_final.pt --out head-export
 python -c "import torch; sd=torch.load(r'head\distill2\head_final.pt', map_location='cpu'); print(len(sd), sum(v.numel() for v in sd.values())/1e6, 'M params')"
 ```
 
-Expected: `15 424.699392 M params`, all tensors fp16, mapped one-to-one onto
-`blk.64.nextn.eh_proj.weight`, `blk.64.nextn.enorm.weight`, `blk.64.nextn.hnorm.weight`,
-`blk.64.attn_norm.weight`, `blk.64.attn_q_norm.weight`, `blk.64.attn_k_norm.weight`,
-`blk.64.post_attention_norm.weight`, `blk.64.attn_{q,k,v,output}.weight`,
-`blk.64.ffn_{gate,up,down}.weight`, `blk.64.nextn.shared_head_norm.weight` (see
-`tools/export_head.py` `NAME_MAP`). SHA-256 of the file in this repo:
-`3c2788d6595c7f751c1cdc82657b31ffe3a67598d6eeb993239a5bb34f43ad54`.
+预期输出 `15 424.699392 M params`，全部张量为 fp16，与下列 GGUF 张量一一对应：
+`blk.64.nextn.eh_proj.weight`、`blk.64.nextn.enorm.weight`、`blk.64.nextn.hnorm.weight`、
+`blk.64.attn_norm.weight`、`blk.64.attn_q_norm.weight`、`blk.64.attn_k_norm.weight`、
+`blk.64.post_attention_norm.weight`、`blk.64.attn_{q,k,v,output}.weight`、
+`blk.64.ffn_{gate,up,down}.weight`、`blk.64.nextn.shared_head_norm.weight`
+（见 `tools/export_head.py` 的 `NAME_MAP`）。本仓库中该文件的 SHA-256：
+`3c2788d6595c7f751c1cdc82657b31ffe3a67598d6eeb993239a5bb34f43ad54`。
 
-## Known limits
+## 已知边界
 
-* Short-context, `n_max=1` acceptance is already ~98–100 % with the shipped head — there is
-  no headroom there. The gain lives in long context and harder distributions.
-* Real (small) overfitting exists in the previous iteration (+1.7 / +3.4 / +4.3 points on
-  depth 1/2/3); in this one the held-out gap is ≈0 (−0.3 / −0.2 / +0.8), consistent with
-  training on the model's own output distribution.
-* Sampling (`temp > 0`) acceptance is naturally lower than greedy — the validation above is
-  greedy. A soft KL target would be the next lever for sampled decoding.
-* Absolute `t/s` depends on the machine and on content; the relative ordering is the
-  meaningful part.
+* 短上下文、`n_max=1` 时原装头已经是 ~98–100 %，没有空间。增益集中在长上下文与更难的分。
+* 上一轮迭代存在真实但很小的过拟合（depth 1/2/3 分别 +1.7 / +3.4 / +4.3 点）；本轮
+  held-out gap ≈ 0（−0.3 / −0.2 / +0.8），与"在模型自身输出分布上训练"一致。
+* 采样解码（`temp > 0`）的接受率天然低于贪婪 —— 上面的验证都是贪婪口径。若要在采样下进一步
+  提速，下一根杠杆是软 KL 目标。
+* 绝对 `t/s` 依机器与内容而定，有意义的是相对排序。
 
-## License
+## 许可证
 
-MIT — see [LICENSE](LICENSE). The base model and the KVMem `llama.cpp` fork are **not**
-covered by this license; this repository only contains the trained head weights, the
-pipeline code and the logs.
+MIT —— 见 [LICENSE](LICENSE)。基础模型与 KVMem `llama.cpp` fork **不**在本许可证覆盖范围内；
+本仓库只包含训练出的头权重、流水线代码与日志。
 
-## Credits
+## 致谢
 
-* Head architecture and `draft-mtp` pairing semantics: `llama.cpp` (`src/models/qwen35.cpp`,
-  `common/speculative.cpp`) and the KVMem fork (`llama-ext.h` `llama_set_embeddings_nextn`).
-* Depth-decay weighting follows the FastMTP line of work (self-distilled data +
-  weight-shared MTP head).
-* Hadamard inverse for the MTP embedding lookup is the upstream patch in
-  `tools/graft_mtp.py`'s companion (`tools/native/` tools assume a build that carries it).
+* 头结构与 `draft-mtp` 配对语义：`llama.cpp`（`src/models/qwen35.cpp`、`common/speculative.cpp`）
+  与 KVMem fork（`llama-ext.h` 的 `llama_set_embeddings_nextn`）。
+* 深度衰减加权参考 FastMTP 一系工作（自蒸馏数据 + 权重共享 MTP 头）。
+* MTP 嵌入查表所需的 Hadamard 逆变换是上游补丁；`tools/native/` 里的工具假定构建已带上它。
