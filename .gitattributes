@@ -1,0 +1,3 @@
+# The trained head checkpoint (849 MB) goes to Git LFS.
+*.pt        filter=lfs diff=lfs merge=lfs -text
+*.safetensors filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,12 @@
+# Hidden-state dumps / self-distillation traces: hundreds of GB, fully regenerable
+# from tools/extract-sessions.py + tools/native/mtp-dump. Never commit them.
+mtp-corpus/dump-*/
+mtp-corpus/traces-*/
+
+# Base and grafted model files (multi-GB; keep them outside the repo)
+*.gguf
+
+# Python env / caches
+.venv/
+__pycache__/
+*.pyc

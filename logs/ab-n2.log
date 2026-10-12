@@ -1,0 +1,1128 @@
+KVMEM_STARTUP requested={"alias":"Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf","auth":{"enabled":false,"key_count":0},"batch_requested":4096,"context_requested":262144,"gpu":{"device_requested":"auto","layers_requested":-2,"main_gpu":0,"split_mode":"layer"},"http":{"host":"127.0.0.1","port":18200,"slots":1,"timeout":1800},"kv":{"k":"q4_0","v":"q4_0"},"kvmem":{"block_tokens":128,"budget":24576,"enabled":true,"gen_reserve":32768,"sink_tokens":0},"model":"D:\\models\\Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf","n_predict":-1,"sources":{"--batch-size":"cli","--cache-type-k":"cli","--cache-type-v":"cli","--chat-template":"cli","--ctx-size":"cli","--enable-thinking":"cli","--flash-attn":"cli","--host":"cli","--kvmem-budget":"cli","--kvmem-gen-reserve":"cli","--kvmem-trace":"cli","--model":"cli","--n-gpu-layers":"cli","--port":"cli","--reasoning-budget":"cli","--spec-draft-n-max":"cli","--spec-type":"cli","--threads":"cli","--ubatch-size":"cli"},"spec_type":"draft-mtp","unlisted_sources":"default","vision":{"enabled":false,"gpu":true,"projector":""}}
+0.00.144.894 I srv    loading model D:\models\Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf
+KVMEM_KV_BYTES bytes=1056964608 cells=57344 slots=448 budget=24576 pool=57344 ratio=0.50 high=0.95 low=0.85 cap_blocks=1819 gpu_total=8585216000 block_bytes=2359296
+KVMEM_GDN_ALLOCATION mode=replay recurrent_bytes=150994944 conv_bytes=5898240 rollback_bytes=0
+KVMEM_GDN_MEMORY mode=replay layers=48 capacity=3 state_bytes=156893184 record_bytes=10672128 descriptor_bytes=2688
+KVMEM_CONTEXT target threads=8 threads_batch=8 ubatch=512 flash_attn_requested=enabled
+0.04.300.511 I common_speculative_init_result: creating MTP draft context against the target model ''
+KVMEM_TRACE mtp_pool cells=57344 target_cells=57344 n_ctx=262144 bytes=234881024 layers=1 block_tokens=128 type_k=f16 type_v=f16 k_row_bytes=2048 v_row_bytes=2048 v_trans=0
+KVMEM_CONTEXT draft threads=8 threads_batch=8 ubatch=512 flash_attn_requested=enabled
+KVMEM_TRACE spec_ckpt tgt=REPLAY (FP32 GDN records)
+KVMEM_TRACE spec_start type=draft-mtp n_max=2 p_min=0.000 dft=00000098F437A170
+KVMEM_STARTUP ready={"alias":"Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf","auth":{"enabled":false,"key_count":0},"batch_actual":4096,"batch_requested":4096,"context_actual":262144,"context_requested":262144,"default_max_tokens":32768,"flash_attn_requested":"enabled","generation_limit":32768,"gpu":{"device_requested":"auto","layers_requested":-2,"main_gpu":0,"split_mode":"layer"},"http":{"host":"127.0.0.1","port":18200,"slots":1,"threads":15,"timeout":1800},"kv":{"k":"q4_0","v":"q4_0"},"kvmem":{"block_tokens":128,"budget":24576,"enabled":true,"gen_reserve":32768,"sink_tokens":0},"model":"D:\\models\\Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf","n_predict":-1,"sources":{"--batch-size":"cli","--cache-type-k":"cli","--cache-type-v":"cli","--chat-template":"cli","--ctx-size":"cli","--enable-thinking":"cli","--flash-attn":"cli","--host":"cli","--kvmem-budget":"cli","--kvmem-gen-reserve":"cli","--kvmem-trace":"cli","--model":"cli","--n-gpu-layers":"cli","--port":"cli","--reasoning-budget":"cli","--spec-draft-n-max":"cli","--spec-type":"cli","--threads":"cli","--threads-batch":"inherited:--threads","--ubatch-size":"cli"},"spec_type":"draft-mtp","threads_actual":8,"threads_batch_actual":8,"ubatch_actual":512,"unlisted_sources":"default","vision":{"enabled":false,"gpu":true,"projector":""}}
+0.04.331.782 I srv    llama-kvmem-server listening on http://127.0.0.1:18200  model=Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf kvmem=1 method=retrieval n_ctx=262144 spec=draft-mtp n_max=2 think=1 rbudget=4096 qmax=512
+KVMEM_TRACE query_loc method=role_block n_user_blocks=1 pick=0 span=[17,121) tokens=[3,29)
+KVMEM_TRACE query_loc method=native_role pick=0 tokens=[2,29)
+KVMEM_TRACE n_prompt=38 query=[2,29) force_pos=-1 last_user_chars=104
+KVMEM_TRACE chat_parse n_msg=1 n_tools=0 tool_choice=auto tool_hist=0 prompt_has_tool=0 grammar_bytes=0 think=0 reasoning=deepseek parser_bytes=765
+KVMEM_TRACE sampling thinking=0 temperature=0 top_p=1 top_k=0 min_p=0 presence_penalty=1.5 frequency_penalty=0 repetition_penalty=1 seed=4294967295
+KVMEM_TRACE chat_sample grammar_type=none lazy=0 n_trig=0 gen_prompt_bytes=41 think_start_bytes=7 think_end_n=2 rbudget=4096 start_toks=1 end_seqs=2 forced_toks=1
+0.21.489.910 I KVMEM_TRACE multimodal_reset context=00000098F4267010 reason=new_conversation lcp=0 keep=0 cached_rows=0 live_rows=0 oldest_checkpoint=-1 checkpoint_count=0
+slot   processing task, n_prompt = 38, n_predict = 300
+KVMEM_TRACE multimodal_decode context=00000098F4267010 rows=[0,2) model_pos=0 image=0 replay=0
+KVMEM_TRACE append n=2 total=2 resident=0 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=448
+KVMEM_TRACE mask last_pos=1 n_kv=256 keep=2 holes=0 keep_pos=[0,1]
+KVMEM_CAPTURE_MEMORY mode=raw slot0_bytes=131072 slot1_bytes=0 last_bytes=131072 pinned_bytes=131072
+KVMEM_TRACE harvest n=16 q=0 k=16 v=0 host=0 gpu=16 bytes=131072 n_pos=2 async=1 slot=0
+KVMEM_TRACE multimodal_compute rows=2 elapsed_ms=365.786 image=0 replay=0
+KVMEM_TRACE multimodal_decode context=00000098F4267010 rows=[2,37) model_pos=2 image=0 replay=0
+KVMEM_TRACE append n=35 total=37 resident=37 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=36 n_kv=256 keep=37 holes=0 keep_pos=[0,36]
+KVMEM_CAPTURE_MEMORY mode=raw slot0_bytes=131072 slot1_bytes=16056320 last_bytes=16056320 pinned_bytes=16187392
+KVMEM_TRACE harvest n=32 q=16 k=16 v=0 host=0 gpu=32 bytes=16056320 n_pos=35 async=1 slot=1
+KVMEM_TRACE mtp_occupy n=2 first_pos=0 first_slot=0 first_cell=2 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=1 n_kv=256 keep=2 holes=0 keep_pos=[0,1]
+KVMEM_TRACE mtp_occupy n=35 first_pos=2 first_slot=0 first_cell=2 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=36 n_kv=256 keep=35 holes=0 keep_pos=[2,36]
+KVMEM_TRACE multimodal_compute rows=35 elapsed_ms=468.978 image=0 replay=0
+KVMEM_TRACE retrieval stage_in=1 stage_out=0 skip=1 gpu_reused=0 window=37 free_slots=447
+KVMEM_TRACE selected 0
+KVMEM_TRACE writeback laid_out=0 raw=0 skip_resident=1 stage_in=1
+KVMEM_KV --- after stage_in_packed block 0 ---
+KVMEM_KV dump block=0 slot=0 n=37 orig=0 packed_k=0 packed_v=0 v_trans=0 type_k=q4_0 pos0=0
+KVMEM_KV L63 no packed K
+KVMEM_TRACE after_retrieval cells used=37 used_max_p1=37 size=57344 seq_pos=[0,36]
+KVMEM_TRACE after_retrieval recr_seq_pos=[36,36]
+KVMEM_TRACE occupy tag=after_retrieval block=0 slot=0 cell=0 empty=0 pos=0 last_empty=0 last_pos=36 n=37 orig=0
+KVMEM_TRACE mtp_selected 0
+KVMEM_TRACE mtp_follow n_gpu=1 n_keep=0 n_host=0 n_writeback=0 n_no_raw=1 seq_pos=[0,36]
+KVMEM_TRACE multimodal_decode context=00000098F4267010 rows=[2,37) model_pos=2 image=0 replay=1
+KVMEM_TRACE mask last_pos=36 n_kv=256 keep=37 holes=0 keep_pos=[0,36]
+KVMEM_TRACE mtp_occupy n=35 first_pos=2 first_slot=0 first_cell=2 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=36 n_kv=256 keep=37 holes=0 keep_pos=[0,36]
+KVMEM_TRACE multimodal_compute rows=35 elapsed_ms=249.879 image=0 replay=1
+KVMEM_PREFILL_DECISION path=query_replay reason=selection_or_attention_view_changed reuse_fallback=none append=[0,37) query=[2,37) feature=[2,29) query_source=user query_reused=0 q_rows=27 replay_rows=35 decision_ms=0.002
+KVMEM_TRACE multimodal_prefill context=00000098F4267010 prefix_hit_rows=0 lcp=0 new_text_rows=37 new_image_rows=0 replayed_rows=35 vision_encode_calls=0 encoder_ms=0.00 logical_cursor=37 model_cursor=37 mtp_synced_rows=37 cached_tail_rows=0 replay_reason=selection_or_attention_view_changed embedding_cache_bytes=0 checkpoint_bytes=314354496
+KVMEM_PREFILL_PERF total_ms=1328.329 first_ms=834.763 replay_ms=249.878 retrieval_ms=9.448 checkpoint_select_ms=0.000 checkpoint_save_ms=57.483 checkpoint_restore_ms=19.473 mean_nested_ms=0.106 carry_nested_ms=0.034 saves=3 restores=1 shared=0 restore_skips=1 checkpoint_unique_bytes=314376152
+KVMEM_CHECKPOINT_MEMORY ref_bytes=628752304 unique_bytes=314376152 live_bytes=314376152 peak_bytes=314376152
+KVMEM_CHAT_PREFILL ms=1329.61 n_prompt=38
+KVMEM_TRACE mtp_occupy n=1 first_pos=37 first_slot=0 first_cell=37 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mtp_occupy n=1 first_pos=38 first_slot=0 first_cell=38 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=40 resident=40 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=39 n_kv=256 keep=40 holes=0 keep_pos=[0,39]
+KVMEM_TRACE decode_mean_ingest n_pos=3 n_k=16 type=f32 gpu=1
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=37 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=37 first_slot=0 first_cell=37 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=39 n_kv=256 keep=40 holes=0 keep_pos=[0,39]
+KVMEM_TRACE mtp_occupy n=1 first_pos=40 first_slot=0 first_cell=40 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=42 resident=42 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=41 n_kv=256 keep=42 holes=0 keep_pos=[0,41]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=39 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=39 first_slot=0 first_cell=39 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=40 n_kv=256 keep=41 holes=0 keep_pos=[0,40]
+KVMEM_TRACE mtp_occupy n=1 first_pos=41 first_slot=0 first_cell=41 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=43 resident=43 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=42 n_kv=256 keep=43 holes=0 keep_pos=[0,42]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=40 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=40 first_slot=0 first_cell=40 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=42 n_kv=256 keep=43 holes=0 keep_pos=[0,42]
+KVMEM_TRACE mtp_occupy n=1 first_pos=43 first_slot=0 first_cell=43 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=45 resident=45 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=44 n_kv=256 keep=45 holes=0 keep_pos=[0,44]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=42 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=42 first_slot=0 first_cell=42 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=43 n_kv=256 keep=44 holes=0 keep_pos=[0,43]
+KVMEM_TRACE mtp_occupy n=1 first_pos=44 first_slot=0 first_cell=44 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=46 resident=46 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=45 n_kv=256 keep=46 holes=0 keep_pos=[0,45]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=43 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=43 first_slot=0 first_cell=43 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=44 n_kv=256 keep=45 holes=0 keep_pos=[0,44]
+KVMEM_TRACE mtp_occupy n=1 first_pos=45 first_slot=0 first_cell=45 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=47 resident=47 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=46 n_kv=256 keep=47 holes=0 keep_pos=[0,46]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=44 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=44 first_slot=0 first_cell=44 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=45 n_kv=256 keep=46 holes=0 keep_pos=[0,45]
+KVMEM_TRACE mtp_occupy n=1 first_pos=46 first_slot=0 first_cell=46 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=48 resident=48 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=47 n_kv=256 keep=48 holes=0 keep_pos=[0,47]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=45 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=45 first_slot=0 first_cell=45 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=48 n_kv=256 keep=49 holes=0 keep_pos=[0,48]
+KVMEM_TRACE mtp_occupy n=1 first_pos=49 first_slot=0 first_cell=49 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=51 resident=51 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=50 n_kv=256 keep=51 holes=0 keep_pos=[0,50]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=48 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=48 first_slot=0 first_cell=48 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=51 n_kv=256 keep=52 holes=0 keep_pos=[0,51]
+KVMEM_TRACE mtp_occupy n=1 first_pos=52 first_slot=0 first_cell=52 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=54 resident=54 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=53 n_kv=256 keep=54 holes=0 keep_pos=[0,53]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=51 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=51 first_slot=0 first_cell=51 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=52 n_kv=256 keep=53 holes=0 keep_pos=[0,52]
+KVMEM_TRACE mtp_occupy n=1 first_pos=53 first_slot=0 first_cell=53 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=55 resident=55 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=54 n_kv=256 keep=55 holes=0 keep_pos=[0,54]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=52 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=52 first_slot=0 first_cell=52 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=54 n_kv=256 keep=55 holes=0 keep_pos=[0,54]
+KVMEM_TRACE mtp_occupy n=1 first_pos=55 first_slot=0 first_cell=55 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=57 resident=57 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=56 n_kv=256 keep=57 holes=0 keep_pos=[0,56]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=54 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=54 first_slot=0 first_cell=54 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=57 n_kv=256 keep=58 holes=0 keep_pos=[0,57]
+KVMEM_TRACE mtp_occupy n=1 first_pos=58 first_slot=0 first_cell=58 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=60 resident=60 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=59 n_kv=256 keep=60 holes=0 keep_pos=[0,59]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=57 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=57 first_slot=0 first_cell=57 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=59 n_kv=256 keep=60 holes=0 keep_pos=[0,59]
+KVMEM_TRACE mtp_occupy n=1 first_pos=60 first_slot=0 first_cell=60 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=62 resident=62 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=61 n_kv=256 keep=62 holes=0 keep_pos=[0,61]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=59 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=59 first_slot=0 first_cell=59 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=61 n_kv=256 keep=62 holes=0 keep_pos=[0,61]
+KVMEM_TRACE mtp_occupy n=1 first_pos=62 first_slot=0 first_cell=62 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=64 resident=64 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=63 n_kv=256 keep=64 holes=0 keep_pos=[0,63]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=61 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=61 first_slot=0 first_cell=61 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=64 n_kv=256 keep=65 holes=0 keep_pos=[0,64]
+KVMEM_TRACE mtp_occupy n=1 first_pos=65 first_slot=0 first_cell=65 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=67 resident=67 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=66 n_kv=256 keep=67 holes=0 keep_pos=[0,66]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=64 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=64 first_slot=0 first_cell=64 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=66 n_kv=256 keep=67 holes=0 keep_pos=[0,66]
+KVMEM_TRACE mtp_occupy n=1 first_pos=67 first_slot=0 first_cell=67 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=69 resident=69 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=68 n_kv=256 keep=69 holes=0 keep_pos=[0,68]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=66 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=66 first_slot=0 first_cell=66 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=67 n_kv=256 keep=68 holes=0 keep_pos=[0,67]
+KVMEM_TRACE mtp_occupy n=1 first_pos=68 first_slot=0 first_cell=68 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=70 resident=70 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=69 n_kv=256 keep=70 holes=0 keep_pos=[0,69]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=67 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=67 first_slot=0 first_cell=67 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=68 n_kv=256 keep=69 holes=0 keep_pos=[0,68]
+KVMEM_TRACE mtp_occupy n=1 first_pos=69 first_slot=0 first_cell=69 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=71 resident=71 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=70 n_kv=256 keep=71 holes=0 keep_pos=[0,70]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=68 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=68 first_slot=0 first_cell=68 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=69 n_kv=256 keep=70 holes=0 keep_pos=[0,69]
+KVMEM_TRACE mtp_occupy n=1 first_pos=70 first_slot=0 first_cell=70 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=72 resident=72 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=71 n_kv=256 keep=72 holes=0 keep_pos=[0,71]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=69 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=69 first_slot=0 first_cell=69 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=70 n_kv=256 keep=71 holes=0 keep_pos=[0,70]
+KVMEM_TRACE mtp_occupy n=1 first_pos=71 first_slot=0 first_cell=71 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=73 resident=73 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=72 n_kv=256 keep=73 holes=0 keep_pos=[0,72]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=70 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=70 first_slot=0 first_cell=70 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=71 n_kv=256 keep=72 holes=0 keep_pos=[0,71]
+KVMEM_TRACE mtp_occupy n=1 first_pos=72 first_slot=0 first_cell=72 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=74 resident=74 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=73 n_kv=256 keep=74 holes=0 keep_pos=[0,73]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=71 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=71 first_slot=0 first_cell=71 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=73 n_kv=256 keep=74 holes=0 keep_pos=[0,73]
+KVMEM_TRACE mtp_occupy n=1 first_pos=74 first_slot=0 first_cell=74 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=76 resident=76 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=75 n_kv=256 keep=76 holes=0 keep_pos=[0,75]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=73 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=73 first_slot=0 first_cell=73 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=74 n_kv=256 keep=75 holes=0 keep_pos=[0,74]
+KVMEM_TRACE mtp_occupy n=1 first_pos=75 first_slot=0 first_cell=75 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=77 resident=77 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=76 n_kv=256 keep=77 holes=0 keep_pos=[0,76]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=74 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=74 first_slot=0 first_cell=74 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=76 n_kv=256 keep=77 holes=0 keep_pos=[0,76]
+KVMEM_TRACE mtp_occupy n=1 first_pos=77 first_slot=0 first_cell=77 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=79 resident=79 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=78 n_kv=256 keep=79 holes=0 keep_pos=[0,78]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=76 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=76 first_slot=0 first_cell=76 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=78 n_kv=256 keep=79 holes=0 keep_pos=[0,78]
+KVMEM_TRACE mtp_occupy n=1 first_pos=79 first_slot=0 first_cell=79 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=81 resident=81 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=80 n_kv=256 keep=81 holes=0 keep_pos=[0,80]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=78 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=78 first_slot=0 first_cell=78 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=81 n_kv=256 keep=82 holes=0 keep_pos=[0,81]
+KVMEM_TRACE mtp_occupy n=1 first_pos=82 first_slot=0 first_cell=82 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=84 resident=84 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=83 n_kv=256 keep=84 holes=0 keep_pos=[0,83]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=81 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=81 first_slot=0 first_cell=81 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=83 n_kv=256 keep=84 holes=0 keep_pos=[0,83]
+KVMEM_TRACE mtp_occupy n=1 first_pos=84 first_slot=0 first_cell=84 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=86 resident=86 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=85 n_kv=256 keep=86 holes=0 keep_pos=[0,85]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=83 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=83 first_slot=0 first_cell=83 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=84 n_kv=256 keep=85 holes=0 keep_pos=[0,84]
+KVMEM_TRACE mtp_occupy n=1 first_pos=85 first_slot=0 first_cell=85 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=87 resident=87 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=86 n_kv=256 keep=87 holes=0 keep_pos=[0,86]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=84 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=84 first_slot=0 first_cell=84 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=85 n_kv=256 keep=86 holes=0 keep_pos=[0,85]
+KVMEM_TRACE mtp_occupy n=1 first_pos=86 first_slot=0 first_cell=86 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=88 resident=88 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=87 n_kv=256 keep=88 holes=0 keep_pos=[0,87]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=85 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=85 first_slot=0 first_cell=85 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=86 n_kv=256 keep=87 holes=0 keep_pos=[0,86]
+KVMEM_TRACE mtp_occupy n=1 first_pos=87 first_slot=0 first_cell=87 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=89 resident=89 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=88 n_kv=256 keep=89 holes=0 keep_pos=[0,88]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=86 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=86 first_slot=0 first_cell=86 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=88 n_kv=256 keep=89 holes=0 keep_pos=[0,88]
+KVMEM_TRACE mtp_occupy n=1 first_pos=89 first_slot=0 first_cell=89 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=91 resident=91 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=90 n_kv=256 keep=91 holes=0 keep_pos=[0,90]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=88 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=88 first_slot=0 first_cell=88 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=89 n_kv=256 keep=90 holes=0 keep_pos=[0,89]
+KVMEM_TRACE mtp_occupy n=1 first_pos=90 first_slot=0 first_cell=90 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=92 resident=92 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=91 n_kv=256 keep=92 holes=0 keep_pos=[0,91]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=89 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=89 first_slot=0 first_cell=89 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=92 n_kv=256 keep=93 holes=0 keep_pos=[0,92]
+KVMEM_TRACE mtp_occupy n=1 first_pos=93 first_slot=0 first_cell=93 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=95 resident=95 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=94 n_kv=256 keep=95 holes=0 keep_pos=[0,94]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=92 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=92 first_slot=0 first_cell=92 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=93 n_kv=256 keep=94 holes=0 keep_pos=[0,93]
+KVMEM_TRACE mtp_occupy n=1 first_pos=94 first_slot=0 first_cell=94 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=96 resident=96 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=95 n_kv=256 keep=96 holes=0 keep_pos=[0,95]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=93 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=93 first_slot=0 first_cell=93 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=94 n_kv=256 keep=95 holes=0 keep_pos=[0,94]
+KVMEM_TRACE mtp_occupy n=1 first_pos=95 first_slot=0 first_cell=95 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=97 resident=97 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=96 n_kv=256 keep=97 holes=0 keep_pos=[0,96]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=94 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=94 first_slot=0 first_cell=94 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=97 n_kv=256 keep=98 holes=0 keep_pos=[0,97]
+KVMEM_TRACE mtp_occupy n=1 first_pos=98 first_slot=0 first_cell=98 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=100 resident=100 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=99 n_kv=256 keep=100 holes=0 keep_pos=[0,99]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=97 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=97 first_slot=0 first_cell=97 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=100 n_kv=256 keep=101 holes=0 keep_pos=[0,100]
+KVMEM_TRACE mtp_occupy n=1 first_pos=101 first_slot=0 first_cell=101 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=103 resident=103 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=102 n_kv=256 keep=103 holes=0 keep_pos=[0,102]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=100 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=100 first_slot=0 first_cell=100 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=103 n_kv=256 keep=104 holes=0 keep_pos=[0,103]
+KVMEM_TRACE mtp_occupy n=1 first_pos=104 first_slot=0 first_cell=104 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=106 resident=106 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=105 n_kv=256 keep=106 holes=0 keep_pos=[0,105]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=103 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=103 first_slot=0 first_cell=103 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=104 n_kv=256 keep=105 holes=0 keep_pos=[0,104]
+KVMEM_TRACE mtp_occupy n=1 first_pos=105 first_slot=0 first_cell=105 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=107 resident=107 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=106 n_kv=256 keep=107 holes=0 keep_pos=[0,106]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=104 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=104 first_slot=0 first_cell=104 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=105 n_kv=256 keep=106 holes=0 keep_pos=[0,105]
+KVMEM_TRACE mtp_occupy n=1 first_pos=106 first_slot=0 first_cell=106 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=108 resident=108 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=107 n_kv=256 keep=108 holes=0 keep_pos=[0,107]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=105 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=105 first_slot=0 first_cell=105 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=106 n_kv=256 keep=107 holes=0 keep_pos=[0,106]
+KVMEM_TRACE mtp_occupy n=1 first_pos=107 first_slot=0 first_cell=107 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=109 resident=109 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=108 n_kv=256 keep=109 holes=0 keep_pos=[0,108]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=106 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=106 first_slot=0 first_cell=106 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=109 n_kv=256 keep=110 holes=0 keep_pos=[0,109]
+KVMEM_TRACE mtp_occupy n=1 first_pos=110 first_slot=0 first_cell=110 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=112 resident=112 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=111 n_kv=256 keep=112 holes=0 keep_pos=[0,111]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=109 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=109 first_slot=0 first_cell=109 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=110 n_kv=256 keep=111 holes=0 keep_pos=[0,110]
+KVMEM_TRACE mtp_occupy n=1 first_pos=111 first_slot=0 first_cell=111 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=113 resident=113 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=112 n_kv=256 keep=113 holes=0 keep_pos=[0,112]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=110 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=110 first_slot=0 first_cell=110 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=111 n_kv=256 keep=112 holes=0 keep_pos=[0,111]
+KVMEM_TRACE mtp_occupy n=1 first_pos=112 first_slot=0 first_cell=112 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=114 resident=114 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=113 n_kv=256 keep=114 holes=0 keep_pos=[0,113]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=111 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=111 first_slot=0 first_cell=111 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=112 n_kv=256 keep=113 holes=0 keep_pos=[0,112]
+KVMEM_TRACE mtp_occupy n=1 first_pos=113 first_slot=0 first_cell=113 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=115 resident=115 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=114 n_kv=256 keep=115 holes=0 keep_pos=[0,114]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=112 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=112 first_slot=0 first_cell=112 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=113 n_kv=256 keep=114 holes=0 keep_pos=[0,113]
+KVMEM_TRACE mtp_occupy n=1 first_pos=114 first_slot=0 first_cell=114 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=116 resident=116 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=115 n_kv=256 keep=116 holes=0 keep_pos=[0,115]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=113 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=113 first_slot=0 first_cell=113 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=116 n_kv=256 keep=117 holes=0 keep_pos=[0,116]
+KVMEM_TRACE mtp_occupy n=1 first_pos=117 first_slot=0 first_cell=117 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=119 resident=119 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=118 n_kv=256 keep=119 holes=0 keep_pos=[0,118]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=116 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=116 first_slot=0 first_cell=116 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=118 n_kv=256 keep=119 holes=0 keep_pos=[0,118]
+KVMEM_TRACE mtp_occupy n=1 first_pos=119 first_slot=0 first_cell=119 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=121 resident=121 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=120 n_kv=256 keep=121 holes=0 keep_pos=[0,120]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=118 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=118 first_slot=0 first_cell=118 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=119 n_kv=256 keep=120 holes=0 keep_pos=[0,119]
+KVMEM_TRACE mtp_occupy n=1 first_pos=120 first_slot=0 first_cell=120 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=122 resident=122 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=121 n_kv=256 keep=122 holes=0 keep_pos=[0,121]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=119 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=119 first_slot=0 first_cell=119 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=120 n_kv=256 keep=121 holes=0 keep_pos=[0,120]
+KVMEM_TRACE mtp_occupy n=1 first_pos=121 first_slot=0 first_cell=121 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=123 resident=123 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=122 n_kv=256 keep=123 holes=0 keep_pos=[0,122]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=120 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=120 first_slot=0 first_cell=120 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=122 n_kv=256 keep=123 holes=0 keep_pos=[0,122]
+KVMEM_TRACE mtp_occupy n=1 first_pos=123 first_slot=0 first_cell=123 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=125 resident=125 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=124 n_kv=256 keep=125 holes=0 keep_pos=[0,124]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=122 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=122 first_slot=0 first_cell=122 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=125 n_kv=256 keep=126 holes=0 keep_pos=[0,125]
+KVMEM_TRACE mtp_occupy n=1 first_pos=126 first_slot=0 first_cell=126 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=128 resident=128 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=127 n_kv=256 keep=128 holes=0 keep_pos=[0,127]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=125 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=125 first_slot=0 first_cell=125 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=126 n_kv=256 keep=127 holes=0 keep_pos=[0,126]
+KVMEM_TRACE mtp_occupy n=1 first_pos=127 first_slot=0 first_cell=127 tgt_slot=0 kv_size=57344
+KVMEM_TRACE append n=3 total=129 resident=128 incoming_blocks=2 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=128 n_kv=256 keep=129 holes=0 keep_pos=[0,128]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=126 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=126 first_slot=0 first_cell=126 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=127 n_kv=256 keep=128 holes=0 keep_pos=[0,127]
+KVMEM_TRACE mtp_occupy n=1 first_pos=128 first_slot=1 first_cell=128 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=130 resident=128 incoming_blocks=2 over_budget=0 need_offload=0 free_slots=447
+KVMEM_TRACE mask last_pos=129 n_kv=256 keep=130 holes=0 keep_pos=[0,129]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=127 ckpt_bytes=0 n_rs=2
+KVMEM_DECODE_MEAN flush block=0 n=91 pos0=37 layers=16 gpu=16 host=0 rms=0.924084
+KVMEM_TRACE decode_mean_flush block=0 n=91 pos0=37 layers=16
+KVMEM_TRACE mtp_occupy n=3 first_pos=127 first_slot=0 first_cell=127 tgt_slot=0 kv_size=57344
+KVMEM_TRACE mask last_pos=129 n_kv=256 keep=130 holes=0 keep_pos=[0,129]
+KVMEM_TRACE mtp_occupy n=1 first_pos=130 first_slot=1 first_cell=130 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=132 resident=132 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=131 n_kv=256 keep=132 holes=0 keep_pos=[0,131]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=129 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=129 first_slot=1 first_cell=129 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=131 n_kv=256 keep=132 holes=0 keep_pos=[0,131]
+KVMEM_TRACE mtp_occupy n=1 first_pos=132 first_slot=1 first_cell=132 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=134 resident=134 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=133 n_kv=256 keep=134 holes=0 keep_pos=[0,133]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=131 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=131 first_slot=1 first_cell=131 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=134 n_kv=256 keep=135 holes=0 keep_pos=[0,134]
+KVMEM_TRACE mtp_occupy n=1 first_pos=135 first_slot=1 first_cell=135 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=137 resident=137 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=136 n_kv=256 keep=137 holes=0 keep_pos=[0,136]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=134 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=134 first_slot=1 first_cell=134 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=135 n_kv=256 keep=136 holes=0 keep_pos=[0,135]
+KVMEM_TRACE mtp_occupy n=1 first_pos=136 first_slot=1 first_cell=136 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=138 resident=138 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=137 n_kv=256 keep=138 holes=0 keep_pos=[0,137]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=135 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=135 first_slot=1 first_cell=135 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=136 n_kv=256 keep=137 holes=0 keep_pos=[0,136]
+KVMEM_TRACE mtp_occupy n=1 first_pos=137 first_slot=1 first_cell=137 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=139 resident=139 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=138 n_kv=256 keep=139 holes=0 keep_pos=[0,138]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=136 ckpt_bytes=0 n_rs=2
+0.27.560.589 I slot   n_gen =    100, tg =  21.09 t/s, tg_3s =  21.09 t/s
+KVMEM_TRACE mtp_occupy n=2 first_pos=136 first_slot=1 first_cell=136 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=137 n_kv=256 keep=138 holes=0 keep_pos=[0,137]
+KVMEM_TRACE mtp_occupy n=1 first_pos=138 first_slot=1 first_cell=138 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=140 resident=140 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=139 n_kv=256 keep=140 holes=0 keep_pos=[0,139]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=137 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=137 first_slot=1 first_cell=137 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=138 n_kv=256 keep=139 holes=0 keep_pos=[0,138]
+KVMEM_TRACE mtp_occupy n=1 first_pos=139 first_slot=1 first_cell=139 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=141 resident=141 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=140 n_kv=256 keep=141 holes=0 keep_pos=[0,140]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=138 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=138 first_slot=1 first_cell=138 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=139 n_kv=256 keep=140 holes=0 keep_pos=[0,139]
+KVMEM_TRACE mtp_occupy n=1 first_pos=140 first_slot=1 first_cell=140 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=142 resident=142 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=141 n_kv=256 keep=142 holes=0 keep_pos=[0,141]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=139 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=139 first_slot=1 first_cell=139 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=141 n_kv=256 keep=142 holes=0 keep_pos=[0,141]
+KVMEM_TRACE mtp_occupy n=1 first_pos=142 first_slot=1 first_cell=142 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=144 resident=144 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=143 n_kv=256 keep=144 holes=0 keep_pos=[0,143]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=141 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=141 first_slot=1 first_cell=141 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=144 n_kv=256 keep=145 holes=0 keep_pos=[0,144]
+KVMEM_TRACE mtp_occupy n=1 first_pos=145 first_slot=1 first_cell=145 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=147 resident=147 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=146 n_kv=256 keep=147 holes=0 keep_pos=[0,146]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=144 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=144 first_slot=1 first_cell=144 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=145 n_kv=256 keep=146 holes=0 keep_pos=[0,145]
+KVMEM_TRACE mtp_occupy n=1 first_pos=146 first_slot=1 first_cell=146 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=148 resident=148 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=147 n_kv=256 keep=148 holes=0 keep_pos=[0,147]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=145 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=145 first_slot=1 first_cell=145 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=147 n_kv=256 keep=148 holes=0 keep_pos=[0,147]
+KVMEM_TRACE mtp_occupy n=1 first_pos=148 first_slot=1 first_cell=148 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=150 resident=150 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=149 n_kv=256 keep=150 holes=0 keep_pos=[0,149]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=147 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=147 first_slot=1 first_cell=147 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=148 n_kv=256 keep=149 holes=0 keep_pos=[0,148]
+KVMEM_TRACE mtp_occupy n=1 first_pos=149 first_slot=1 first_cell=149 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=151 resident=151 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=150 n_kv=256 keep=151 holes=0 keep_pos=[0,150]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=148 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=148 first_slot=1 first_cell=148 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=149 n_kv=256 keep=150 holes=0 keep_pos=[0,149]
+KVMEM_TRACE mtp_occupy n=1 first_pos=150 first_slot=1 first_cell=150 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=152 resident=152 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=151 n_kv=256 keep=152 holes=0 keep_pos=[0,151]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=149 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=149 first_slot=1 first_cell=149 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=151 n_kv=256 keep=152 holes=0 keep_pos=[0,151]
+KVMEM_TRACE mtp_occupy n=1 first_pos=152 first_slot=1 first_cell=152 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=154 resident=154 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=153 n_kv=256 keep=154 holes=0 keep_pos=[0,153]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=151 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=151 first_slot=1 first_cell=151 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=154 n_kv=256 keep=155 holes=0 keep_pos=[0,154]
+KVMEM_TRACE mtp_occupy n=1 first_pos=155 first_slot=1 first_cell=155 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=157 resident=157 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=156 n_kv=256 keep=157 holes=0 keep_pos=[0,156]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=154 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=154 first_slot=1 first_cell=154 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=156 n_kv=256 keep=157 holes=0 keep_pos=[0,156]
+KVMEM_TRACE mtp_occupy n=1 first_pos=157 first_slot=1 first_cell=157 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=159 resident=159 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=158 n_kv=256 keep=159 holes=0 keep_pos=[0,158]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=156 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=156 first_slot=1 first_cell=156 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=157 n_kv=256 keep=158 holes=0 keep_pos=[0,157]
+KVMEM_TRACE mtp_occupy n=1 first_pos=158 first_slot=1 first_cell=158 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=160 resident=160 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=159 n_kv=256 keep=160 holes=0 keep_pos=[0,159]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=157 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=157 first_slot=1 first_cell=157 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=159 n_kv=256 keep=160 holes=0 keep_pos=[0,159]
+KVMEM_TRACE mtp_occupy n=1 first_pos=160 first_slot=1 first_cell=160 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=162 resident=162 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=161 n_kv=256 keep=162 holes=0 keep_pos=[0,161]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=159 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=159 first_slot=1 first_cell=159 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=161 n_kv=256 keep=162 holes=0 keep_pos=[0,161]
+KVMEM_TRACE mtp_occupy n=1 first_pos=162 first_slot=1 first_cell=162 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=164 resident=164 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=163 n_kv=256 keep=164 holes=0 keep_pos=[0,163]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=161 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=161 first_slot=1 first_cell=161 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=162 n_kv=256 keep=163 holes=0 keep_pos=[0,162]
+KVMEM_TRACE mtp_occupy n=1 first_pos=163 first_slot=1 first_cell=163 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=165 resident=165 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=164 n_kv=256 keep=165 holes=0 keep_pos=[0,164]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=162 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=162 first_slot=1 first_cell=162 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=163 n_kv=256 keep=164 holes=0 keep_pos=[0,163]
+KVMEM_TRACE mtp_occupy n=1 first_pos=164 first_slot=1 first_cell=164 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=166 resident=166 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=165 n_kv=256 keep=166 holes=0 keep_pos=[0,165]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=163 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=163 first_slot=1 first_cell=163 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=165 n_kv=256 keep=166 holes=0 keep_pos=[0,165]
+KVMEM_TRACE mtp_occupy n=1 first_pos=166 first_slot=1 first_cell=166 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=168 resident=168 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=167 n_kv=256 keep=168 holes=0 keep_pos=[0,167]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=165 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=165 first_slot=1 first_cell=165 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=166 n_kv=256 keep=167 holes=0 keep_pos=[0,166]
+KVMEM_TRACE mtp_occupy n=1 first_pos=167 first_slot=1 first_cell=167 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=169 resident=169 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=168 n_kv=256 keep=169 holes=0 keep_pos=[0,168]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=166 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=166 first_slot=1 first_cell=166 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=168 n_kv=256 keep=169 holes=0 keep_pos=[0,168]
+KVMEM_TRACE mtp_occupy n=1 first_pos=169 first_slot=1 first_cell=169 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=171 resident=171 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=170 n_kv=256 keep=171 holes=0 keep_pos=[0,170]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=168 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=168 first_slot=1 first_cell=168 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=169 n_kv=256 keep=170 holes=0 keep_pos=[0,169]
+KVMEM_TRACE mtp_occupy n=1 first_pos=170 first_slot=1 first_cell=170 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=172 resident=172 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=171 n_kv=256 keep=172 holes=0 keep_pos=[0,171]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=169 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=169 first_slot=1 first_cell=169 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=170 n_kv=256 keep=171 holes=0 keep_pos=[0,170]
+KVMEM_TRACE mtp_occupy n=1 first_pos=171 first_slot=1 first_cell=171 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=173 resident=173 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=172 n_kv=256 keep=173 holes=0 keep_pos=[0,172]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=170 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=170 first_slot=1 first_cell=170 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=171 n_kv=256 keep=172 holes=0 keep_pos=[0,171]
+KVMEM_TRACE mtp_occupy n=1 first_pos=172 first_slot=1 first_cell=172 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=174 resident=174 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=173 n_kv=256 keep=174 holes=0 keep_pos=[0,173]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=171 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=171 first_slot=1 first_cell=171 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=174 n_kv=256 keep=175 holes=0 keep_pos=[0,174]
+KVMEM_TRACE mtp_occupy n=1 first_pos=175 first_slot=1 first_cell=175 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=177 resident=177 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=176 n_kv=256 keep=177 holes=0 keep_pos=[0,176]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=174 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=174 first_slot=1 first_cell=174 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=176 n_kv=256 keep=177 holes=0 keep_pos=[0,176]
+KVMEM_TRACE mtp_occupy n=1 first_pos=177 first_slot=1 first_cell=177 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=179 resident=179 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=178 n_kv=256 keep=179 holes=0 keep_pos=[0,178]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=176 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=176 first_slot=1 first_cell=176 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=177 n_kv=256 keep=178 holes=0 keep_pos=[0,177]
+KVMEM_TRACE mtp_occupy n=1 first_pos=178 first_slot=1 first_cell=178 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=180 resident=180 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=179 n_kv=256 keep=180 holes=0 keep_pos=[0,179]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=177 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=177 first_slot=1 first_cell=177 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=178 n_kv=256 keep=179 holes=0 keep_pos=[0,178]
+KVMEM_TRACE mtp_occupy n=1 first_pos=179 first_slot=1 first_cell=179 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=181 resident=181 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=180 n_kv=256 keep=181 holes=0 keep_pos=[0,180]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=178 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=178 first_slot=1 first_cell=178 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=179 n_kv=256 keep=180 holes=0 keep_pos=[0,179]
+KVMEM_TRACE mtp_occupy n=1 first_pos=180 first_slot=1 first_cell=180 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=182 resident=182 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=181 n_kv=256 keep=182 holes=0 keep_pos=[0,181]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=179 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=179 first_slot=1 first_cell=179 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=180 n_kv=256 keep=181 holes=0 keep_pos=[0,180]
+KVMEM_TRACE mtp_occupy n=1 first_pos=181 first_slot=1 first_cell=181 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=183 resident=183 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=182 n_kv=256 keep=183 holes=0 keep_pos=[0,182]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=180 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=180 first_slot=1 first_cell=180 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=183 n_kv=256 keep=184 holes=0 keep_pos=[0,183]
+KVMEM_TRACE mtp_occupy n=1 first_pos=184 first_slot=1 first_cell=184 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=186 resident=186 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=185 n_kv=256 keep=186 holes=0 keep_pos=[0,185]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=183 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=183 first_slot=1 first_cell=183 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=186 n_kv=256 keep=187 holes=0 keep_pos=[0,186]
+KVMEM_TRACE mtp_occupy n=1 first_pos=187 first_slot=1 first_cell=187 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=189 resident=189 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=188 n_kv=256 keep=189 holes=0 keep_pos=[0,188]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=186 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=186 first_slot=1 first_cell=186 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=187 n_kv=256 keep=188 holes=0 keep_pos=[0,187]
+KVMEM_TRACE mtp_occupy n=1 first_pos=188 first_slot=1 first_cell=188 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=190 resident=190 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=189 n_kv=256 keep=190 holes=0 keep_pos=[0,189]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=187 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=187 first_slot=1 first_cell=187 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=188 n_kv=256 keep=189 holes=0 keep_pos=[0,188]
+KVMEM_TRACE mtp_occupy n=1 first_pos=189 first_slot=1 first_cell=189 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=191 resident=191 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=190 n_kv=256 keep=191 holes=0 keep_pos=[0,190]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=188 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=188 first_slot=1 first_cell=188 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=189 n_kv=256 keep=190 holes=0 keep_pos=[0,189]
+KVMEM_TRACE mtp_occupy n=1 first_pos=190 first_slot=1 first_cell=190 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=192 resident=192 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=191 n_kv=256 keep=192 holes=0 keep_pos=[0,191]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=189 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=189 first_slot=1 first_cell=189 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=192 n_kv=256 keep=193 holes=0 keep_pos=[0,192]
+KVMEM_TRACE mtp_occupy n=1 first_pos=193 first_slot=1 first_cell=193 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=195 resident=195 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=194 n_kv=256 keep=195 holes=0 keep_pos=[0,194]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=192 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=192 first_slot=1 first_cell=192 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=193 n_kv=256 keep=194 holes=0 keep_pos=[0,193]
+KVMEM_TRACE mtp_occupy n=1 first_pos=194 first_slot=1 first_cell=194 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=196 resident=196 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=195 n_kv=256 keep=196 holes=0 keep_pos=[0,195]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=193 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=193 first_slot=1 first_cell=193 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=195 n_kv=256 keep=196 holes=0 keep_pos=[0,195]
+KVMEM_TRACE mtp_occupy n=1 first_pos=196 first_slot=1 first_cell=196 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=198 resident=198 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=197 n_kv=256 keep=198 holes=0 keep_pos=[0,197]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=195 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=195 first_slot=1 first_cell=195 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=196 n_kv=256 keep=197 holes=0 keep_pos=[0,196]
+KVMEM_TRACE mtp_occupy n=1 first_pos=197 first_slot=1 first_cell=197 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=199 resident=199 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=198 n_kv=256 keep=199 holes=0 keep_pos=[0,198]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=196 ckpt_bytes=0 n_rs=2
+0.30.567.063 I slot   n_gen =    160, tg =  20.65 t/s, tg_3s =  19.96 t/s
+KVMEM_TRACE mtp_occupy n=2 first_pos=196 first_slot=1 first_cell=196 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=197 n_kv=256 keep=198 holes=0 keep_pos=[0,197]
+KVMEM_TRACE mtp_occupy n=1 first_pos=198 first_slot=1 first_cell=198 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=200 resident=200 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=199 n_kv=256 keep=200 holes=0 keep_pos=[0,199]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=197 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=197 first_slot=1 first_cell=197 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=199 n_kv=256 keep=200 holes=0 keep_pos=[0,199]
+KVMEM_TRACE mtp_occupy n=1 first_pos=200 first_slot=1 first_cell=200 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=202 resident=202 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=201 n_kv=256 keep=202 holes=0 keep_pos=[0,201]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=199 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=199 first_slot=1 first_cell=199 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=201 n_kv=256 keep=202 holes=0 keep_pos=[0,201]
+KVMEM_TRACE mtp_occupy n=1 first_pos=202 first_slot=1 first_cell=202 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=204 resident=204 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=203 n_kv=256 keep=204 holes=0 keep_pos=[0,203]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=201 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=201 first_slot=1 first_cell=201 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=203 n_kv=256 keep=204 holes=0 keep_pos=[0,203]
+KVMEM_TRACE mtp_occupy n=1 first_pos=204 first_slot=1 first_cell=204 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=206 resident=206 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=205 n_kv=256 keep=206 holes=0 keep_pos=[0,205]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=203 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=203 first_slot=1 first_cell=203 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=204 n_kv=256 keep=205 holes=0 keep_pos=[0,204]
+KVMEM_TRACE mtp_occupy n=1 first_pos=205 first_slot=1 first_cell=205 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=207 resident=207 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=206 n_kv=256 keep=207 holes=0 keep_pos=[0,206]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=204 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=204 first_slot=1 first_cell=204 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=206 n_kv=256 keep=207 holes=0 keep_pos=[0,206]
+KVMEM_TRACE mtp_occupy n=1 first_pos=207 first_slot=1 first_cell=207 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=209 resident=209 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=208 n_kv=256 keep=209 holes=0 keep_pos=[0,208]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=206 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=206 first_slot=1 first_cell=206 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=209 n_kv=256 keep=210 holes=0 keep_pos=[0,209]
+KVMEM_TRACE mtp_occupy n=1 first_pos=210 first_slot=1 first_cell=210 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=212 resident=212 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=211 n_kv=256 keep=212 holes=0 keep_pos=[0,211]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=209 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=209 first_slot=1 first_cell=209 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=210 n_kv=256 keep=211 holes=0 keep_pos=[0,210]
+KVMEM_TRACE mtp_occupy n=1 first_pos=211 first_slot=1 first_cell=211 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=213 resident=213 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=212 n_kv=256 keep=213 holes=0 keep_pos=[0,212]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=210 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=210 first_slot=1 first_cell=210 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=213 n_kv=256 keep=214 holes=0 keep_pos=[0,213]
+KVMEM_TRACE mtp_occupy n=1 first_pos=214 first_slot=1 first_cell=214 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=216 resident=216 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=215 n_kv=256 keep=216 holes=0 keep_pos=[0,215]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=213 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=213 first_slot=1 first_cell=213 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=215 n_kv=256 keep=216 holes=0 keep_pos=[0,215]
+KVMEM_TRACE mtp_occupy n=1 first_pos=216 first_slot=1 first_cell=216 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=218 resident=218 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=217 n_kv=256 keep=218 holes=0 keep_pos=[0,217]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=215 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=215 first_slot=1 first_cell=215 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=217 n_kv=256 keep=218 holes=0 keep_pos=[0,217]
+KVMEM_TRACE mtp_occupy n=1 first_pos=218 first_slot=1 first_cell=218 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=220 resident=220 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=219 n_kv=256 keep=220 holes=0 keep_pos=[0,219]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=217 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=217 first_slot=1 first_cell=217 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=219 n_kv=256 keep=220 holes=0 keep_pos=[0,219]
+KVMEM_TRACE mtp_occupy n=1 first_pos=220 first_slot=1 first_cell=220 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=222 resident=222 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=221 n_kv=256 keep=222 holes=0 keep_pos=[0,221]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=219 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=219 first_slot=1 first_cell=219 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=220 n_kv=256 keep=221 holes=0 keep_pos=[0,220]
+KVMEM_TRACE mtp_occupy n=1 first_pos=221 first_slot=1 first_cell=221 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=223 resident=223 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=222 n_kv=256 keep=223 holes=0 keep_pos=[0,222]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=220 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=220 first_slot=1 first_cell=220 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=222 n_kv=256 keep=223 holes=0 keep_pos=[0,222]
+KVMEM_TRACE mtp_occupy n=1 first_pos=223 first_slot=1 first_cell=223 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=225 resident=225 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=224 n_kv=256 keep=225 holes=0 keep_pos=[0,224]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=222 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=222 first_slot=1 first_cell=222 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=225 n_kv=256 keep=226 holes=0 keep_pos=[0,225]
+KVMEM_TRACE mtp_occupy n=1 first_pos=226 first_slot=1 first_cell=226 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=228 resident=228 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=227 n_kv=256 keep=228 holes=0 keep_pos=[0,227]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=225 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=225 first_slot=1 first_cell=225 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=226 n_kv=256 keep=227 holes=0 keep_pos=[0,226]
+KVMEM_TRACE mtp_occupy n=1 first_pos=227 first_slot=1 first_cell=227 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=229 resident=229 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=228 n_kv=256 keep=229 holes=0 keep_pos=[0,228]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=226 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=226 first_slot=1 first_cell=226 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=229 n_kv=256 keep=230 holes=0 keep_pos=[0,229]
+KVMEM_TRACE mtp_occupy n=1 first_pos=230 first_slot=1 first_cell=230 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=232 resident=232 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=231 n_kv=256 keep=232 holes=0 keep_pos=[0,231]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=229 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=229 first_slot=1 first_cell=229 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=231 n_kv=256 keep=232 holes=0 keep_pos=[0,231]
+KVMEM_TRACE mtp_occupy n=1 first_pos=232 first_slot=1 first_cell=232 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=234 resident=234 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=233 n_kv=256 keep=234 holes=0 keep_pos=[0,233]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=231 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=231 first_slot=1 first_cell=231 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=232 n_kv=256 keep=233 holes=0 keep_pos=[0,232]
+KVMEM_TRACE mtp_occupy n=1 first_pos=233 first_slot=1 first_cell=233 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=235 resident=235 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=234 n_kv=256 keep=235 holes=0 keep_pos=[0,234]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=232 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=232 first_slot=1 first_cell=232 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=233 n_kv=256 keep=234 holes=0 keep_pos=[0,233]
+KVMEM_TRACE mtp_occupy n=1 first_pos=234 first_slot=1 first_cell=234 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=236 resident=236 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=235 n_kv=256 keep=236 holes=0 keep_pos=[0,235]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=233 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=233 first_slot=1 first_cell=233 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=235 n_kv=256 keep=236 holes=0 keep_pos=[0,235]
+KVMEM_TRACE mtp_occupy n=1 first_pos=236 first_slot=1 first_cell=236 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=238 resident=238 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=237 n_kv=256 keep=238 holes=0 keep_pos=[0,237]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=235 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=235 first_slot=1 first_cell=235 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=237 n_kv=256 keep=238 holes=0 keep_pos=[0,237]
+KVMEM_TRACE mtp_occupy n=1 first_pos=238 first_slot=1 first_cell=238 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=240 resident=240 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=239 n_kv=256 keep=240 holes=0 keep_pos=[0,239]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=237 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=237 first_slot=1 first_cell=237 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=239 n_kv=256 keep=240 holes=0 keep_pos=[0,239]
+KVMEM_TRACE mtp_occupy n=1 first_pos=240 first_slot=1 first_cell=240 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=242 resident=242 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=241 n_kv=256 keep=242 holes=0 keep_pos=[0,241]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=239 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=239 first_slot=1 first_cell=239 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=240 n_kv=256 keep=241 holes=0 keep_pos=[0,240]
+KVMEM_TRACE mtp_occupy n=1 first_pos=241 first_slot=1 first_cell=241 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=243 resident=243 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=242 n_kv=256 keep=243 holes=0 keep_pos=[0,242]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=240 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=240 first_slot=1 first_cell=240 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=241 n_kv=256 keep=242 holes=0 keep_pos=[0,241]
+KVMEM_TRACE mtp_occupy n=1 first_pos=242 first_slot=1 first_cell=242 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=244 resident=244 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=243 n_kv=256 keep=244 holes=0 keep_pos=[0,243]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=241 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=241 first_slot=1 first_cell=241 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=242 n_kv=256 keep=243 holes=0 keep_pos=[0,242]
+KVMEM_TRACE mtp_occupy n=1 first_pos=243 first_slot=1 first_cell=243 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=245 resident=245 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=244 n_kv=256 keep=245 holes=0 keep_pos=[0,244]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=242 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=242 first_slot=1 first_cell=242 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=245 n_kv=256 keep=246 holes=0 keep_pos=[0,245]
+KVMEM_TRACE mtp_occupy n=1 first_pos=246 first_slot=1 first_cell=246 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=248 resident=248 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=247 n_kv=256 keep=248 holes=0 keep_pos=[0,247]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=245 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=245 first_slot=1 first_cell=245 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=246 n_kv=256 keep=247 holes=0 keep_pos=[0,246]
+KVMEM_TRACE mtp_occupy n=1 first_pos=247 first_slot=1 first_cell=247 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=249 resident=249 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=248 n_kv=256 keep=249 holes=0 keep_pos=[0,248]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=246 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=246 first_slot=1 first_cell=246 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=248 n_kv=256 keep=249 holes=0 keep_pos=[0,248]
+KVMEM_TRACE mtp_occupy n=1 first_pos=249 first_slot=1 first_cell=249 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=251 resident=251 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=250 n_kv=256 keep=251 holes=0 keep_pos=[0,250]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=248 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=248 first_slot=1 first_cell=248 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=250 n_kv=256 keep=251 holes=0 keep_pos=[0,250]
+KVMEM_TRACE mtp_occupy n=1 first_pos=251 first_slot=1 first_cell=251 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=253 resident=253 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=252 n_kv=256 keep=253 holes=0 keep_pos=[0,252]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=250 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=250 first_slot=1 first_cell=250 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=252 n_kv=256 keep=253 holes=0 keep_pos=[0,252]
+KVMEM_TRACE mtp_occupy n=1 first_pos=253 first_slot=1 first_cell=253 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=255 resident=255 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=254 n_kv=256 keep=255 holes=0 keep_pos=[0,254]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=252 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=252 first_slot=1 first_cell=252 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=254 n_kv=256 keep=255 holes=0 keep_pos=[0,254]
+KVMEM_TRACE mtp_occupy n=1 first_pos=255 first_slot=1 first_cell=255 tgt_slot=1 kv_size=57344
+KVMEM_TRACE append n=3 total=257 resident=256 incoming_blocks=2 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=256 n_kv=512 keep=257 holes=0 keep_pos=[0,256]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=254 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=254 first_slot=1 first_cell=254 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=255 n_kv=256 keep=256 holes=0 keep_pos=[0,255]
+KVMEM_TRACE mtp_occupy n=1 first_pos=256 first_slot=2 first_cell=256 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=258 resident=256 incoming_blocks=2 over_budget=0 need_offload=0 free_slots=446
+KVMEM_TRACE mask last_pos=257 n_kv=512 keep=258 holes=0 keep_pos=[0,257]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=255 ckpt_bytes=0 n_rs=2
+KVMEM_DECODE_MEAN flush block=1 n=128 pos0=128 layers=16 gpu=16 host=0 rms=0.927121
+KVMEM_TRACE decode_mean_flush block=1 n=128 pos0=128 layers=16
+KVMEM_TRACE mtp_occupy n=3 first_pos=255 first_slot=1 first_cell=255 tgt_slot=1 kv_size=57344
+KVMEM_TRACE mask last_pos=257 n_kv=512 keep=258 holes=0 keep_pos=[0,257]
+KVMEM_TRACE mtp_occupy n=1 first_pos=258 first_slot=2 first_cell=258 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=260 resident=260 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=259 n_kv=512 keep=260 holes=0 keep_pos=[0,259]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=257 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=257 first_slot=2 first_cell=257 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=258 n_kv=512 keep=259 holes=0 keep_pos=[0,258]
+KVMEM_TRACE mtp_occupy n=1 first_pos=259 first_slot=2 first_cell=259 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=261 resident=261 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=260 n_kv=512 keep=261 holes=0 keep_pos=[0,260]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=258 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=258 first_slot=2 first_cell=258 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=260 n_kv=512 keep=261 holes=0 keep_pos=[0,260]
+KVMEM_TRACE mtp_occupy n=1 first_pos=261 first_slot=2 first_cell=261 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=263 resident=263 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=262 n_kv=512 keep=263 holes=0 keep_pos=[0,262]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=260 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=260 first_slot=2 first_cell=260 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=261 n_kv=512 keep=262 holes=0 keep_pos=[0,261]
+KVMEM_TRACE mtp_occupy n=1 first_pos=262 first_slot=2 first_cell=262 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=264 resident=264 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=263 n_kv=512 keep=264 holes=0 keep_pos=[0,263]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=261 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=261 first_slot=2 first_cell=261 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=262 n_kv=512 keep=263 holes=0 keep_pos=[0,262]
+KVMEM_TRACE mtp_occupy n=1 first_pos=263 first_slot=2 first_cell=263 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=265 resident=265 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=264 n_kv=512 keep=265 holes=0 keep_pos=[0,264]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=262 ckpt_bytes=0 n_rs=2
+0.33.618.547 I slot   n_gen =    226, tg =  20.93 t/s, tg_3s =  21.63 t/s
+KVMEM_TRACE mtp_occupy n=3 first_pos=262 first_slot=2 first_cell=262 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=264 n_kv=512 keep=265 holes=0 keep_pos=[0,264]
+KVMEM_TRACE mtp_occupy n=1 first_pos=265 first_slot=2 first_cell=265 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=267 resident=267 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=266 n_kv=512 keep=267 holes=0 keep_pos=[0,266]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=264 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=264 first_slot=2 first_cell=264 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=266 n_kv=512 keep=267 holes=0 keep_pos=[0,266]
+KVMEM_TRACE mtp_occupy n=1 first_pos=267 first_slot=2 first_cell=267 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=269 resident=269 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=268 n_kv=512 keep=269 holes=0 keep_pos=[0,268]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=266 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=266 first_slot=2 first_cell=266 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=268 n_kv=512 keep=269 holes=0 keep_pos=[0,268]
+KVMEM_TRACE mtp_occupy n=1 first_pos=269 first_slot=2 first_cell=269 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=271 resident=271 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=270 n_kv=512 keep=271 holes=0 keep_pos=[0,270]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=268 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=268 first_slot=2 first_cell=268 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=271 n_kv=512 keep=272 holes=0 keep_pos=[0,271]
+KVMEM_TRACE mtp_occupy n=1 first_pos=272 first_slot=2 first_cell=272 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=274 resident=274 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=273 n_kv=512 keep=274 holes=0 keep_pos=[0,273]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=271 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=271 first_slot=2 first_cell=271 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=274 n_kv=512 keep=275 holes=0 keep_pos=[0,274]
+KVMEM_TRACE mtp_occupy n=1 first_pos=275 first_slot=2 first_cell=275 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=277 resident=277 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=276 n_kv=512 keep=277 holes=0 keep_pos=[0,276]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=274 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=274 first_slot=2 first_cell=274 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=275 n_kv=512 keep=276 holes=0 keep_pos=[0,275]
+KVMEM_TRACE mtp_occupy n=1 first_pos=276 first_slot=2 first_cell=276 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=278 resident=278 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=277 n_kv=512 keep=278 holes=0 keep_pos=[0,277]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=275 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=275 first_slot=2 first_cell=275 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=277 n_kv=512 keep=278 holes=0 keep_pos=[0,277]
+KVMEM_TRACE mtp_occupy n=1 first_pos=278 first_slot=2 first_cell=278 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=280 resident=280 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=279 n_kv=512 keep=280 holes=0 keep_pos=[0,279]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=277 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=277 first_slot=2 first_cell=277 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=278 n_kv=512 keep=279 holes=0 keep_pos=[0,278]
+KVMEM_TRACE mtp_occupy n=1 first_pos=279 first_slot=2 first_cell=279 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=281 resident=281 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=280 n_kv=512 keep=281 holes=0 keep_pos=[0,280]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=278 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=278 first_slot=2 first_cell=278 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=279 n_kv=512 keep=280 holes=0 keep_pos=[0,279]
+KVMEM_TRACE mtp_occupy n=1 first_pos=280 first_slot=2 first_cell=280 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=282 resident=282 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=281 n_kv=512 keep=282 holes=0 keep_pos=[0,281]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=279 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=279 first_slot=2 first_cell=279 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=281 n_kv=512 keep=282 holes=0 keep_pos=[0,281]
+KVMEM_TRACE mtp_occupy n=1 first_pos=282 first_slot=2 first_cell=282 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=284 resident=284 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=283 n_kv=512 keep=284 holes=0 keep_pos=[0,283]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=281 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=281 first_slot=2 first_cell=281 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=282 n_kv=512 keep=283 holes=0 keep_pos=[0,282]
+KVMEM_TRACE mtp_occupy n=1 first_pos=283 first_slot=2 first_cell=283 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=285 resident=285 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=284 n_kv=512 keep=285 holes=0 keep_pos=[0,284]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=282 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=282 first_slot=2 first_cell=282 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=283 n_kv=512 keep=284 holes=0 keep_pos=[0,283]
+KVMEM_TRACE mtp_occupy n=1 first_pos=284 first_slot=2 first_cell=284 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=286 resident=286 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=285 n_kv=512 keep=286 holes=0 keep_pos=[0,285]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=283 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=283 first_slot=2 first_cell=283 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=286 n_kv=512 keep=287 holes=0 keep_pos=[0,286]
+KVMEM_TRACE mtp_occupy n=1 first_pos=287 first_slot=2 first_cell=287 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=289 resident=289 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=288 n_kv=512 keep=289 holes=0 keep_pos=[0,288]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=286 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=286 first_slot=2 first_cell=286 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=288 n_kv=512 keep=289 holes=0 keep_pos=[0,288]
+KVMEM_TRACE mtp_occupy n=1 first_pos=289 first_slot=2 first_cell=289 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=291 resident=291 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=290 n_kv=512 keep=291 holes=0 keep_pos=[0,290]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=288 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=288 first_slot=2 first_cell=288 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=289 n_kv=512 keep=290 holes=0 keep_pos=[0,289]
+KVMEM_TRACE mtp_occupy n=1 first_pos=290 first_slot=2 first_cell=290 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=292 resident=292 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=291 n_kv=512 keep=292 holes=0 keep_pos=[0,291]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=289 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=289 first_slot=2 first_cell=289 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=292 n_kv=512 keep=293 holes=0 keep_pos=[0,292]
+KVMEM_TRACE mtp_occupy n=1 first_pos=293 first_slot=2 first_cell=293 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=295 resident=295 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=294 n_kv=512 keep=295 holes=0 keep_pos=[0,294]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=292 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=292 first_slot=2 first_cell=292 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=293 n_kv=512 keep=294 holes=0 keep_pos=[0,293]
+KVMEM_TRACE mtp_occupy n=1 first_pos=294 first_slot=2 first_cell=294 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=296 resident=296 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=295 n_kv=512 keep=296 holes=0 keep_pos=[0,295]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=293 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=293 first_slot=2 first_cell=293 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=296 n_kv=512 keep=297 holes=0 keep_pos=[0,296]
+KVMEM_TRACE mtp_occupy n=1 first_pos=297 first_slot=2 first_cell=297 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=299 resident=299 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=298 n_kv=512 keep=299 holes=0 keep_pos=[0,298]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=296 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=296 first_slot=2 first_cell=296 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=299 n_kv=512 keep=300 holes=0 keep_pos=[0,299]
+KVMEM_TRACE mtp_occupy n=1 first_pos=300 first_slot=2 first_cell=300 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=302 resident=302 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=301 n_kv=512 keep=302 holes=0 keep_pos=[0,301]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=299 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=299 first_slot=2 first_cell=299 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=300 n_kv=512 keep=301 holes=0 keep_pos=[0,300]
+KVMEM_TRACE mtp_occupy n=1 first_pos=301 first_slot=2 first_cell=301 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=303 resident=303 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=302 n_kv=512 keep=303 holes=0 keep_pos=[0,302]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=300 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=300 first_slot=2 first_cell=300 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=303 n_kv=512 keep=304 holes=0 keep_pos=[0,303]
+KVMEM_TRACE mtp_occupy n=1 first_pos=304 first_slot=2 first_cell=304 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=306 resident=306 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=305 n_kv=512 keep=306 holes=0 keep_pos=[0,305]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=303 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=303 first_slot=2 first_cell=303 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=306 n_kv=512 keep=307 holes=0 keep_pos=[0,306]
+KVMEM_TRACE mtp_occupy n=1 first_pos=307 first_slot=2 first_cell=307 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=309 resident=309 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=308 n_kv=512 keep=309 holes=0 keep_pos=[0,308]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=306 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=306 first_slot=2 first_cell=306 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=308 n_kv=512 keep=309 holes=0 keep_pos=[0,308]
+KVMEM_TRACE mtp_occupy n=1 first_pos=309 first_slot=2 first_cell=309 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=311 resident=311 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=310 n_kv=512 keep=311 holes=0 keep_pos=[0,310]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=308 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=308 first_slot=2 first_cell=308 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=311 n_kv=512 keep=312 holes=0 keep_pos=[0,311]
+KVMEM_TRACE mtp_occupy n=1 first_pos=312 first_slot=2 first_cell=312 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=314 resident=314 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=313 n_kv=512 keep=314 holes=0 keep_pos=[0,313]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=311 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=311 first_slot=2 first_cell=311 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=312 n_kv=512 keep=313 holes=0 keep_pos=[0,312]
+KVMEM_TRACE mtp_occupy n=1 first_pos=313 first_slot=2 first_cell=313 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=315 resident=315 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=314 n_kv=512 keep=315 holes=0 keep_pos=[0,314]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=312 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=312 first_slot=2 first_cell=312 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=314 n_kv=512 keep=315 holes=0 keep_pos=[0,314]
+KVMEM_TRACE mtp_occupy n=1 first_pos=315 first_slot=2 first_cell=315 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=317 resident=317 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=316 n_kv=512 keep=317 holes=0 keep_pos=[0,316]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=314 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=314 first_slot=2 first_cell=314 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=316 n_kv=512 keep=317 holes=0 keep_pos=[0,316]
+KVMEM_TRACE mtp_occupy n=1 first_pos=317 first_slot=2 first_cell=317 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=319 resident=319 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=318 n_kv=512 keep=319 holes=0 keep_pos=[0,318]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=316 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=316 first_slot=2 first_cell=316 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=318 n_kv=512 keep=319 holes=0 keep_pos=[0,318]
+KVMEM_TRACE mtp_occupy n=1 first_pos=319 first_slot=2 first_cell=319 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=321 resident=321 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=320 n_kv=512 keep=321 holes=0 keep_pos=[0,320]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=318 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=318 first_slot=2 first_cell=318 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=319 n_kv=512 keep=320 holes=0 keep_pos=[0,319]
+KVMEM_TRACE mtp_occupy n=1 first_pos=320 first_slot=2 first_cell=320 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=322 resident=322 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=321 n_kv=512 keep=322 holes=0 keep_pos=[0,321]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=319 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=319 first_slot=2 first_cell=319 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=320 n_kv=512 keep=321 holes=0 keep_pos=[0,320]
+KVMEM_TRACE mtp_occupy n=1 first_pos=321 first_slot=2 first_cell=321 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=323 resident=323 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=322 n_kv=512 keep=323 holes=0 keep_pos=[0,322]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=320 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=320 first_slot=2 first_cell=320 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=321 n_kv=512 keep=322 holes=0 keep_pos=[0,321]
+KVMEM_TRACE mtp_occupy n=1 first_pos=322 first_slot=2 first_cell=322 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=324 resident=324 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=323 n_kv=512 keep=324 holes=0 keep_pos=[0,323]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=321 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=321 first_slot=2 first_cell=321 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=323 n_kv=512 keep=324 holes=0 keep_pos=[0,323]
+KVMEM_TRACE mtp_occupy n=1 first_pos=324 first_slot=2 first_cell=324 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=326 resident=326 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=325 n_kv=512 keep=326 holes=0 keep_pos=[0,325]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=323 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=3 first_pos=323 first_slot=2 first_cell=323 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=325 n_kv=512 keep=326 holes=0 keep_pos=[0,325]
+KVMEM_TRACE mtp_occupy n=1 first_pos=326 first_slot=2 first_cell=326 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=328 resident=328 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=327 n_kv=512 keep=328 holes=0 keep_pos=[0,327]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=325 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=325 first_slot=2 first_cell=325 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=326 n_kv=512 keep=327 holes=0 keep_pos=[0,326]
+KVMEM_TRACE mtp_occupy n=1 first_pos=327 first_slot=2 first_cell=327 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=329 resident=329 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=328 n_kv=512 keep=329 holes=0 keep_pos=[0,328]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=326 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=326 first_slot=2 first_cell=326 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=327 n_kv=512 keep=328 holes=0 keep_pos=[0,327]
+KVMEM_TRACE mtp_occupy n=1 first_pos=328 first_slot=2 first_cell=328 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=330 resident=330 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=329 n_kv=512 keep=330 holes=0 keep_pos=[0,329]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=327 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=327 first_slot=2 first_cell=327 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=328 n_kv=512 keep=329 holes=0 keep_pos=[0,328]
+KVMEM_TRACE mtp_occupy n=1 first_pos=329 first_slot=2 first_cell=329 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=331 resident=331 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=330 n_kv=512 keep=331 holes=0 keep_pos=[0,330]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=328 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=328 first_slot=2 first_cell=328 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=329 n_kv=512 keep=330 holes=0 keep_pos=[0,329]
+KVMEM_TRACE mtp_occupy n=1 first_pos=330 first_slot=2 first_cell=330 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=332 resident=332 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=331 n_kv=512 keep=332 holes=0 keep_pos=[0,331]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=2 restore=0 pos=329 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=4 first_pos=329 first_slot=2 first_cell=329 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=332 n_kv=512 keep=333 holes=0 keep_pos=[0,332]
+KVMEM_TRACE mtp_occupy n=1 first_pos=333 first_slot=2 first_cell=333 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=335 resident=335 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=334 n_kv=512 keep=335 holes=0 keep_pos=[0,334]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=1 restore=0 pos=332 ckpt_bytes=0 n_rs=2
+0.36.671.505 I slot   n_gen =    296, tg =  21.37 t/s, tg_3s =  22.93 t/s
+KVMEM_TRACE mtp_occupy n=3 first_pos=332 first_slot=2 first_cell=332 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=334 n_kv=512 keep=335 holes=0 keep_pos=[0,334]
+KVMEM_TRACE mtp_occupy n=1 first_pos=335 first_slot=2 first_cell=335 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=3 total=337 resident=337 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=336 n_kv=512 keep=337 holes=0 keep_pos=[0,336]
+KVMEM_TRACE spec_verify n_draft=2 n_accept=0 restore=0 pos=334 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE mtp_occupy n=2 first_pos=334 first_slot=2 first_cell=334 tgt_slot=2 kv_size=57344
+KVMEM_TRACE mask last_pos=335 n_kv=512 keep=336 holes=0 keep_pos=[0,335]
+KVMEM_TRACE mtp_occupy n=1 first_pos=336 first_slot=2 first_cell=336 tgt_slot=2 kv_size=57344
+KVMEM_TRACE append n=2 total=337 resident=337 incoming_blocks=1 over_budget=0 need_offload=0 free_slots=445
+KVMEM_TRACE mask last_pos=336 n_kv=512 keep=337 holes=0 keep_pos=[0,336]
+KVMEM_TRACE spec_verify n_draft=1 n_accept=1 restore=0 pos=335 ckpt_bytes=0 n_rs=2
+KVMEM_TRACE spec_stats n_gen=300 n_drafted=349 n_accept=125 n_restore=0 accept_pct=35.8
+KVMEM_GDN_PERF mode=replay verify_calls=175 committed_rows=300 verify_ms=11557.479 fold_ms=250.768
+KVMEM_DECODE_MEAN flush block=2 n=81 pos0=256 layers=16 gpu=16 host=0 rms=0.940234
+KVMEM_TRACE decode_mean_flush block=2 n=81 pos0=256 layers=16
+KVMEM_GEN_WALL n=300 ms=14007.14 toks=21.42
+KVMEM_CHAT_TURN n_prompt=38 n_gen=300 prefill_ms=1329.61 gen_ms=14007.14 wall_ms=15336.75 gen_toks=21.42
+0.36.826.678 I slot   prompt eval time =    1329.61 ms /    38 tokens (   28.58 tokens per second), cache = 0
+0.36.826.683 I slot          eval time =   14007.14 ms /   300 tokens (   21.42 tokens per second)
+0.36.826.684 I slot         total time =   15336.75 ms /   338 tokens
+KVMEM_CHECKPOINT_COMMIT live_bytes=471531744 peak_bytes=471553400
+KVMEM_TRACE cache_commit n_prompt=38 n_gen=300 n_cached=338 stored=337
+KVMEM_TRACE chat_out n_tool_calls=0 finish=length content_chars=1356 reasoning_chars=0
