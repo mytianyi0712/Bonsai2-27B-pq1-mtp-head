@@ -6,13 +6,29 @@ A self-distilled **MTP (multi-token prediction / `nextn`) draft head** for
 `Ternary-Bonsai-2-27B-PTQ1_0` (architecture `qwen35`, PrismML PTQ1_0 ternary trunk,
 256K context), trained as a direct replacement for the shipped head.
 
-Only the **head weights** live in this repository — the base model is not redistributed
-here (see [What is / is not in this repo](#what-is--is-not-in-this-repo)). The head is a
-drop-in patch: grafting it into a copy of the base GGUF changes **15 tensors** and the
-file size stays byte-identical (the graft tool rewrites the existing quantized blocks in
-place: Q6_K / Q8_0 / F32 with the exact same types).
+Only the **head weights** live in this repository — no model file is redistributed here (see
+[What is / is not in this repo](#what-is--is-not-in-this-repo)). The head is a drop-in patch:
+grafting rewrites the 15 `blk.64.*` tensors **in place**, in each tensor's own type
+(Q6_K / Q8_0 / F32), leaving every other byte untouched — so the grafted file has **exactly
+the size of its input file**.
 
-* Base model: `Ternary-Bonsai-2-27B-PTQ1_0.gguf` (engine `qwen35`, 65 blocks, `blk.64.*` = MTP head)
+⚠️ **Size, spelled out (this is a common trap):** the head-less
+`Ternary-Bonsai-2-27B-PTQ1_0.gguf` has the MTP parameters **physically removed** (851 tensors,
+**not a single `blk.64.*`**), so you **cannot** graft into it — `head-graft` exits with
+`no blk.64.* tensors in ...`. The graft source must be the head-bearing file:
+
+| File | Tensors | Size |
+|---|---|---|
+| `Ternary-Bonsai-2-27B-PTQ1_0.gguf` (head-less) | 851 | 5,946,648,928 B (5.95 GB) |
+| `Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf` (head-bearing, **graft source**) | 866 | 6,297,658,656 B (6.30 GB) |
+| grafted output (`-mtp-distill2`, same length as the row above) | 866 | 6,297,658,656 B |
+
+So the head itself costs **351,009,728 B ≈ 0.351 GB** (0.327 GiB): **351,008,768 B** is the
+15 `blk.64.*` tensors and the remaining ~960 B is the tensor table plus
+`qwen35.nextn_predict_layers`. Grafting does not change the size, but going from the head-less
+file to the head-bearing one grows it by 0.35 GB.
+
+* Base model (graft source): `Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf` (engine `qwen35`, 65 blocks, `blk.64.*` = MTP head)
 * Head: **424.7 M parameters**, fp16 checkpoint → deployment QAT (Q6_K big matrices, Q8_0 k/v, F32 norms)
 * Runtime: `llama.cpp` + KVMem fork with `--spec-type draft-mtp`
 
@@ -140,7 +156,7 @@ on digit runs). `accept_pct` is **per drafted token**, so values from different 
 are not comparable; compare `t/s` across `n_max`.
 
 **Graft verification.** The exported fp16 tensors are quantized to each tensor's deployment
-type and patched into a byte copy of the base model; `draft-logits` re-runs the MTP graph on
+type and patched into a byte copy of the head-bearing model; `draft-logits` re-runs the MTP graph on
 the patched file and the same rows are replayed through the checkpoint in PyTorch
 (`tools/verify_graft.py`):
 
@@ -177,9 +193,15 @@ built from local agent session transcripts and is intentionally not published.
 rem 1. export the fp16 tensors from the checkpoint
 python tools\export_head.py --ckpt head\distill2\head_final.pt --out head-export
 
-rem 2. patch a byte copy of the base model (size unchanged) + verify
+rem 2. patch a byte copy of the HEAD-BEARING model (output length == input length) + verify
 graft-head.bat  head\distill2\head_final.pt  Ternary-Bonsai-2-27B-PTQ1_0-mtp-distill2.gguf
 ```
+
+**Mind the graft source:** `scripts/graft-head.bat` sets `BASE` to the head-bearing
+`Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf` (6.30 GB). Pointing it at the head-less file
+(5.95 GB) fails with `no blk.64.* tensors in ...` — by design, not a bug. The output
+`-mtp-distill2.gguf` is **exactly as long as its input, 6,297,658,656 B**; relative to the
+head-less model it is 0.351 GB larger, and that 0.351 GB *is* the head.
 
 `scripts/graft-head.bat` wraps steps 1–3 (`export_head.py` → `head-graft.exe` →
 `draft-logits.exe` + `verify_graft.py`). Then serve it and read `spec_stats`:
@@ -208,11 +230,11 @@ rem 1. corpus: agent session transcripts -> text (>=100k chars each)
 python tools\extract-sessions.py
 
 rem 2. hidden states: (token, post-final-norm h) per position, with the deployment KV type
-mtp-dump.exe -m BASE.gguf --list filelist.txt --out dump --chunk 2048 --ub 1024 ^
+mtp-dump.exe -m Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf --list filelist.txt --out dump --chunk 2048 --ub 1024 ^
              --max-tokens 8500000 --ngl 99 --threads 8 -ctk q4_0 -ctv q4_0
 
 rem 3. self-distillation traces with the real template + thinking
-mtp-trace.exe -m BASE.gguf --prompts trace-prompts.txt --out traces ^
+mtp-trace.exe -m Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf --prompts trace-prompts.txt --out traces ^
               --template-file bonsai-chat-template.jinja --max-new 700 --chunk 1024 ^
               --ctk q4_0 --ctv q4_0 --ngl 99 --threads 8
 python tools\mtp-trace-merge.py --src traces --out traces-merged --min-rows 520
@@ -224,7 +246,7 @@ python tools\train_mtp.py --data dump --data traces-merged --data traces-merged 
 
 rem 5. graft + verify + measure
 python tools\export_head.py --ckpt run\head_final.pt --out head-export
-head-graft.exe --src BASE.gguf --out PATCHED.gguf --weights head-export
+head-graft.exe --src Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf --out PATCHED.gguf --weights head-export
 draft-logits.exe -m PATCHED.gguf --tokens <64 real token ids> --out verify-dir
 python tools\verify_graft.py --val verify-dir --ckpt run\head_final.pt
 python tools\mtp-bench.py --model PATCHED.gguf --n-max 2

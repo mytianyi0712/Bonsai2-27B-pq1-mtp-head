@@ -6,10 +6,24 @@
 **MTP（multi-token prediction / `nextn`）草稿头**，用自蒸馏训练，直接替换模型自带的头。
 
 本仓库只放**头权重**，不重新分发基础模型（见 [仓库里有什么 / 没有什么](#仓库里有什么--没有什么)）。
-这个头是补丁式的：嫁接到基础 GGUF 的副本上只改 **15 个张量**，文件体积**一字不变**
-（嫁接工具按原张量类型就地改写：Q6_K / Q8_0 / F32 与原类型完全一致）。
+这个头是补丁式的：嫁接把 15 个 `blk.64.*` 张量按各自原类型（Q6_K / Q8_0 / F32）**就地改写**，
+其余字节不动，因此嫁接产物与**输入文件**等长。
 
-* 基础模型：`Ternary-Bonsai-2-27B-PTQ1_0.gguf`（引擎 `qwen35`，65 层，`blk.64.*` = MTP 头）
+⚠️ **体积必须说清（常见误解）**：无头版 `Ternary-Bonsai-2-27B-PTQ1_0.gguf` 是
+**直接把 MTP 相关参数剔除了的**（851 个张量，**一个 `blk.64.*` 都没有**），所以**不能**把
+头嫁接进无头版 —— `head-graft` 会因为找不到 `blk.64.*` 而直接报错退出。嫁接源必须是**带头版**：
+
+| 文件 | 张量数 | 体积 |
+|---|---|---|
+| `Ternary-Bonsai-2-27B-PTQ1_0.gguf`（无头） | 851 | 5,946,648,928 B（5.95 GB） |
+| `Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf`（含头，**嫁接源**） | 866 | 6,297,658,656 B（6.30 GB） |
+| 嫁接产物（`-mtp-distill2`，等长于上一行） | 866 | 6,297,658,656 B |
+
+头带来的体积增量 = **351,009,728 B ≈ 0.351 GB**（0.327 GiB），其中
+**351,008,768 B** 正是 15 个 `blk.64.*` 张量的字节和，剩下 ~960 B 是张量表 + `qwen35.nextn_predict_layers`
+元数据。也就是说：**嫁接不会改变体积，但从无头版换到带头版会增大 0.35 GB。**
+
+* 基础模型（嫁接源）：`Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf`（引擎 `qwen35`，65 层，`blk.64.*` = MTP 头）
 * 头：**424.7 M 参数**，fp16 检查点 → 按部署类型做 QAT（大矩阵 Q6_K，k/v Q8_0，norm F32）
 * 运行时：`llama.cpp` + KVMem fork，`--spec-type draft-mtp`
 
@@ -165,9 +179,14 @@ deploy/bonsai-chat-template.jinja
 rem 1. 从检查点导出 fp16 张量
 python tools\export_head.py --ckpt head\distill2\head_final.pt --out head-export
 
-rem 2. 补丁进基础模型的字节副本（体积不变）+ 验证
+rem 2. 补丁进【带头版】的字节副本（体积与源文件相同）+ 验证
 graft-head.bat  head\distill2\head_final.pt  Ternary-Bonsai-2-27B-PTQ1_0-mtp-distill2.gguf
 ```
+
+**注意嫁接源**：`scripts/graft-head.bat` 里的 `BASE` 是带头版
+`Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf`（6.30 GB）。传无头版（5.95 GB）进去会以
+`no blk.64.* tensors in ...` 失败退出 —— 那是设计如此，不是 bug。产物 `-mtp-distill2.gguf`
+与源文件**等长 6,297,658,656 B**；相对无头版则大 0.351 GB（那 0.351 GB 就是头本身）。
 
 `scripts/graft-head.bat` 封装了这三步（`export_head.py` → `head-graft.exe` →
 `draft-logits.exe` + `verify_graft.py`）。然后起服务，读 `spec_stats`：
@@ -195,11 +214,11 @@ rem 1. 语料：会话记录 -> 文本（每个文件 >=100k 字符）
 python tools\extract-sessions.py
 
 rem 2. 隐藏态：每个位置的 (token, final-norm 后的 h)，用部署同款 KV 量化
-mtp-dump.exe -m BASE.gguf --list filelist.txt --out dump --chunk 2048 --ub 1024 ^
+mtp-dump.exe -m Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf --list filelist.txt --out dump --chunk 2048 --ub 1024 ^
              --max-tokens 8500000 --ngl 99 --threads 8 -ctk q4_0 -ctv q4_0
 
 rem 3. 用真实模板 + 思考生成自蒸馏轨迹
-mtp-trace.exe -m BASE.gguf --prompts trace-prompts.txt --out traces ^
+mtp-trace.exe -m Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf --prompts trace-prompts.txt --out traces ^
               --template-file bonsai-chat-template.jinja --max-new 700 --chunk 1024 ^
               --ctk q4_0 --ctv q4_0 --ngl 99 --threads 8
 python tools\mtp-trace-merge.py --src traces --out traces-merged --min-rows 520
@@ -211,7 +230,7 @@ python tools\train_mtp.py --data dump --data traces-merged --data traces-merged 
 
 rem 5. 嫁接 + 验证 + 测速
 python tools\export_head.py --ckpt run\head_final.pt --out head-export
-head-graft.exe --src BASE.gguf --out PATCHED.gguf --weights head-export
+head-graft.exe --src Ternary-Bonsai-2-27B-PTQ1_0-mtp.gguf --out PATCHED.gguf --weights head-export
 draft-logits.exe -m PATCHED.gguf --tokens <64 个真实 token id> --out verify-dir
 python tools\verify_graft.py --val verify-dir --ckpt run\head_final.pt
 python tools\mtp-bench.py --model PATCHED.gguf --n-max 2
